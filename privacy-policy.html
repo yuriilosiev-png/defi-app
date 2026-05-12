@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Policy — DeFi Analytics</title>
+<style>
+  :root {
+    --bg: #0d1117; --bg2: #161b22; --accent: #00e5ff;
+    --green: #00c896; --text: #f0f6fc; --muted: #8b949e; --border: #30363d;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif;
+         font-size: 16px; line-height: 1.7; padding: 0 16px 60px; }
+  .wrap { max-width: 800px; margin: 0 auto; }
+  header { padding: 40px 0 32px; border-bottom: 1px solid var(--border); margin-bottom: 36px; }
+  .logo { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+  .logo-icon { width: 48px; height: 48px; background: var(--bg2);
+               border: 1px solid var(--border); border-radius: 12px;
+               display: flex; align-items: flex-end; justify-content: center;
+               gap: 4px; padding: 8px; }
+  .bar { border-radius: 3px; }
+  h1 { font-size: 28px; font-weight: 700; color: var(--text); }
+  .subtitle { color: var(--muted); font-size: 14px; margin-top: 6px; }
+  .updated { display: inline-block; background: rgba(0,229,255,0.1);
+             border: 1px solid rgba(0,229,255,0.3); border-radius: 6px;
+             padding: 4px 12px; font-size: 13px; color: var(--accent); margin-top: 10px; }
+  h2 { font-size: 20px; font-weight: 700; color: var(--accent);
+       margin: 36px 0 14px; padding-left: 14px;
+       border-left: 3px solid var(--accent); }
+  p { color: #c9d1d9; margin-bottom: 14px; }
+  ul { padding-left: 20px; margin-bottom: 14px; }
+  li { color: #c9d1d9; margin-bottom: 8px; }
+  .card { background: var(--bg2); border: 1px solid var(--border);
+          border-radius: 12px; padding: 20px 24px; margin-bottom: 16px; }
+  .card-title { font-weight: 700; color: var(--green); margin-bottom: 8px; font-size: 15px; }
+  .safe-box { background: rgba(0,200,150,0.08); border: 1px solid rgba(0,200,150,0.3);
+              border-radius: 12px; padding: 20px 24px; margin: 24px 0; }
+  .safe-box .safe-title { font-weight: 700; color: var(--green); font-size: 16px; margin-bottom: 10px; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  footer { margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--border);
+           color: var(--muted); font-size: 13px; text-align: center; }
+  .tag { display: inline-block; background: rgba(0,229,255,0.1);
+         border: 1px solid rgba(0,229,255,0.25); border-radius: 6px;
+         padding: 2px 10px; font-size: 13px; color: var(--accent); margin: 2px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">
+      <div class="bar" style="width:10px;height:20px;background:#00e5ff"></div>
+      <div class="bar" style="width:10px;height:30px;background:#00c896"></div>
+      <div class="bar" style="width:10px;height:14px;background:#7c3aed"></div>
+    </div>
+    <div>
+      <h1>DeFi Analytics</h1>
+      <div class="subtitle">Personal DeFi Portfolio Tracker</div>
+    </div>
+  </div>
+  <div class="updated">Last updated: May 2026</div>
+</header>
+
+<div class="safe-box">
+  <div class="safe-title">🔒 Key Privacy Commitments</div>
+  <ul>
+    <li><strong>No private keys</strong> — the app only uses your public wallet address</li>
+    <li><strong>No registration</strong> — no account, no email, no personal data required</li>
+    <li><strong>No tracking</strong> — no analytics, no advertising, no third-party trackers</li>
+    <li><strong>Read-only</strong> — the app cannot initiate transactions or move funds</li>
+    <li><strong>Local storage</strong> — all your settings are stored on your device only</li>
+  </ul>
+</div>
+
+<h2>1. About This App</h2>
+<p>DeFi Analytics is a personal portfolio tracker for decentralized finance (DeFi) investors. It is a free, open web application available at <a href="https://yuriilosiev-png.github.io/defi-app/">yuriilosiev-png.github.io/defi-app/</a> and as an Android APK.</p>
+<p>The app helps users monitor their DeFi positions across multiple protocols and blockchains, including Aave, Uniswap, GMX, Morpho, Compound, Merkl, and Solana.</p>
+
+<h2>2. Data We Collect</h2>
+<p>DeFi Analytics collects <strong>no personal data</strong>. The app does not require registration and does not collect names, email addresses, phone numbers, or any other personally identifiable information.</p>
+
+<div class="card">
+  <div class="card-title">What you enter into the app</div>
+  <p>The only input the app uses is your <strong>public blockchain wallet address</strong> (e.g. <code>0x...</code> for EVM chains or a base58 address for Solana). This address is:</p>
+  <ul>
+    <li>Stored locally on your device using browser localStorage</li>
+    <li>Used only to query public blockchain APIs</li>
+    <li>Never transmitted to our servers (we have no servers)</li>
+    <li>Never sold or shared with third parties</li>
+  </ul>
+</div>
+
+<div class="card">
+  <div class="card-title">Journal and settings data</div>
+  <p>Any data you manually enter (journal entries, pool settings, asset allocations) is stored <strong>exclusively on your device</strong> using browser localStorage. This data never leaves your device.</p>
+</div>
+
+<h2>3. Public Blockchain Data</h2>
+<p>To display your DeFi positions, the app queries the following <strong>public APIs</strong> using your wallet address:</p>
+<ul>
+  <li><span class="tag">Ankr API</span> — multichain EVM token balances and Aave positions</li>
+  <li><span class="tag">Helius API</span> — Solana native balance and SPL token balances</li>
+  <li><span class="tag">DefiLlama</span> — DeFi protocol positions across chains</li>
+  <li><span class="tag">Merkl API</span> — accumulated DeFi rewards</li>
+  <li><span class="tag">Morpho GraphQL</span> — Morpho Blue lending positions</li>
+  <li><span class="tag">GMX Subgraph</span> — GMX GLV pool balances</li>
+  <li><span class="tag">Blockscout</span> — EVM fallback when Ankr is unavailable</li>
+  <li><span class="tag">Binance / CoinGecko / CryptoCompare</span> — asset price feeds</li>
+</ul>
+<p>All blockchain data queried is <strong>public information</strong> — the same data anyone can view on a block explorer by entering your address. No private or sensitive information is accessed.</p>
+
+<h2>4. Telegram Integration (Optional)</h2>
+<p>The app includes an optional Telegram notification feature via the <strong>@DefiAnalytics2bot</strong> bot. If you choose to use this feature:</p>
+<ul>
+  <li>You provide your Telegram username to connect the bot</li>
+  <li>The bot sends alerts to your Telegram account (Health Factor drops, price levels, LP range exits)</li>
+  <li>Your Telegram username is stored locally on your device only</li>
+  <li>The bot operates via the Render.com cloud service solely to relay alert messages</li>
+  <li>This feature is entirely optional and can be skipped</li>
+</ul>
+
+<h2>5. Cookies and Tracking</h2>
+<p>DeFi Analytics does <strong>not use cookies</strong>, does not use analytics tools (Google Analytics, Firebase, etc.), and does not contain any advertising or third-party tracking scripts.</p>
+<p>Data persistence is achieved solely through browser <code>localStorage</code>, which is local to your device and not accessible by any server.</p>
+
+<h2>6. Children's Privacy</h2>
+<p>DeFi Analytics is intended for adults (18+) interested in decentralized finance. The app does not knowingly collect data from or target children under the age of 18.</p>
+
+<h2>7. Security</h2>
+<p>Since the app stores all data locally and transmits only public wallet addresses to public APIs, the security risk is minimal. However, users should be aware:</p>
+<ul>
+  <li>Never enter your private key or seed phrase anywhere in this app — it is not required and should never be shared</li>
+  <li>The app operates in watch-only (read-only) mode — it cannot sign transactions or move your funds</li>
+  <li>Price and position data is sourced from third-party APIs and may occasionally be inaccurate</li>
+</ul>
+
+<h2>8. Disclaimer</h2>
+<p>DeFi Analytics is an <strong>informational tool only</strong>. It does not provide financial, investment, or legal advice. All data displayed is for informational purposes. Always verify important financial decisions through official protocol interfaces and consult a qualified financial advisor if needed.</p>
+
+<h2>9. Changes to This Policy</h2>
+<p>This privacy policy may be updated occasionally. The "Last updated" date at the top of this page will reflect any changes. Continued use of the app after changes constitutes acceptance of the updated policy.</p>
+
+<h2>10. Contact</h2>
+<p>If you have questions about this privacy policy or the app, please contact:</p>
+<div class="card">
+  <div class="card-title">Yurii Losev — Developer</div>
+  <p>Telegram: <a href="https://t.me/Losiev11">@Losiev11</a><br>
+  App: <a href="https://yuriilosiev-png.github.io/defi-app/">yuriilosiev-png.github.io/defi-app/</a><br>
+  Location: Tbilisi, Georgia</p>
+</div>
+
+<footer>
+  <p>© 2026 DeFi Analytics · Yurii Losev · Free and open-source</p>
+  <p style="margin-top:8px"><a href="https://yuriilosiev-png.github.io/defi-app/">Back to App</a></p>
+</footer>
+
+</div>
+</body>
+</html>
