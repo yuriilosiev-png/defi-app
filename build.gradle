@@ -1,0 +1,17 @@
+// Корневой build.gradle. AGP 8.9.1 — минимум для compileSdk 36; требует Gradle 8.11.1+ и JDK 17
+// (Gradle ставится в CI вручную, см. .github/workflows/build-apk.yml).
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.9.1'
+    }
+}
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}

@@ -1,0 +1,66 @@
+apply plugin: 'com.android.application'
+
+android {
+    namespace "com.losiev.defianalytics"
+    compileSdkVersion 36
+
+    defaultConfig {
+        applicationId "com.losiev.defianalytics"
+        minSdkVersion 24
+        targetSdkVersion 36
+        // При каждом релизе в Play: versionCode +1 (иначе Play не примет файл).
+        // После выхода релиза в Play — обновить version.json (из него берётся баннер «Доступно обновление»).
+        versionCode 1
+        versionName "1.0.0"
+    }
+
+    signingConfigs {
+        release {
+            // Всё приходит из переменных окружения CI (секреты GitHub). В репозитории паролей нет.
+            storeFile file(System.getenv("KEYSTORE_PATH") ?: "release.jks")
+            storePassword System.getenv("STORE_PASSWORD")
+            keyAlias System.getenv("KEY_ALIAS") ?: "defi-analytics"
+            keyPassword System.getenv("KEY_PASSWORD")
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.release
+        }
+        debug {
+            // Отладочная сборка ставится рядом с боевой и не мешает ей
+            applicationIdSuffix ".debug"
+            versionNameSuffix "-debug"
+            minifyEnabled false
+        }
+    }
+
+    // Проверки lint при каждой release-сборке только замедляют CI
+    lint {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+configurations {
+    all {
+        exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk7'
+        exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk8'
+    }
+}
+
+dependencies {
+    implementation 'androidx.core:core:1.13.1'
+    implementation 'androidx.activity:activity:1.9.3'
+    // WebViewAssetLoader: отдаёт index.html из APK по https-адресу, без file:// и без сайта в сети
+    implementation 'androidx.webkit:webkit:1.12.1'
+    // Play In-App Updates: кнопка «Установить» в баннере обновления
+    implementation 'com.google.android.play:app-update:2.1.0'
+}
