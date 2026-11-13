@@ -1,0 +1,10 @@
+.gradle/
+build/
+app/build/
+local.properties
+*.jks
+*.keystore
+*.enc
+app/src/main/assets/index.html
+app/src/main/assets/privacy-policy.html
+.idea/

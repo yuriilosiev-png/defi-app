@@ -1,0 +1,144 @@
+name: Build APK + AAB
+on:
+  push:
+    branches: [ main, android-apk ]
+    paths:
+      - 'index.html'
+      - 'privacy-policy.html'
+      - 'app/**'
+      - 'build.gradle'
+      - 'gradle.properties'
+      - 'settings.gradle'
+      - '.github/workflows/build-apk.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-apk-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Ловим синтаксическую ошибку в JS ещё до сборки
+      - name: Check JS syntax of index.html
+        run: |
+          python3 - <<'PY'
+          import re
+          c = open('index.html', encoding='utf-8').read()
+          blocks = re.findall(r'<script(?![^>]*\bsrc=)[^>]*>(.*?)</script>', c, re.S)
+          open('/tmp/inline.js', 'w', encoding='utf-8').write('\n;\n'.join(blocks))
+          print('inline scripts:', len(blocks))
+          PY
+          node --check /tmp/inline.js
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools
+
+      - name: Install Android SDK platform 36
+        run: sdkmanager "platforms;android-36" "build-tools;36.0.0"
+
+      - name: Cache Gradle
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ hashFiles('build.gradle', 'app/build.gradle', 'settings.gradle', 'gradle.properties') }}
+          restore-keys: gradle-
+
+      - name: Install Gradle 8.11.1
+        run: |
+          wget -q https://services.gradle.org/distributions/gradle-8.11.1-bin.zip -O /tmp/gradle.zip
+          unzip -q /tmp/gradle.zip -d /opt/gradle
+          echo "/opt/gradle/gradle-8.11.1/bin" >> $GITHUB_PATH
+
+      # Веб-часть кладём внутрь APK: приложение работает офлайн и не грузит код из сети
+      - name: Bundle web app into assets
+        run: |
+          mkdir -p app/src/main/assets
+          cp index.html app/src/main/assets/index.html
+          cp privacy-policy.html app/src/main/assets/privacy-policy.html
+
+      # Debug-APK собираем всегда: для быстрой проверки, ключ не нужен
+      - name: Build debug APK
+        run: gradle assembleDebug --no-daemon
+
+      # Ключ подписи хранится в секрете только в зашифрованном виде
+      - name: Check signing secrets
+        id: ks
+        env:
+          KEYSTORE_ENC: ${{ secrets.KEYSTORE_ENC }}
+          STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+        run: |
+          if [ -n "$KEYSTORE_ENC" ] && [ -n "$STORE_PASSWORD" ]; then
+            echo "has=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Секреты подписи не заданы — собран только debug APK"
+          fi
+
+      - name: Decrypt keystore
+        if: steps.ks.outputs.has == 'true'
+        env:
+          KEYSTORE_ENC: ${{ secrets.KEYSTORE_ENC }}
+          STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+        run: |
+          printf '%s' "$KEYSTORE_ENC" | base64 -d > "$RUNNER_TEMP/ks.enc"
+          openssl enc -d -aes-256-cbc -pbkdf2 -iter 600000 -pass env:STORE_PASSWORD \
+            -in "$RUNNER_TEMP/ks.enc" -out "$RUNNER_TEMP/release.jks"
+          rm -f "$RUNNER_TEMP/ks.enc"
+
+      - name: Build release APK + AAB
+        if: steps.ks.outputs.has == 'true'
+        env:
+          KEYSTORE_PATH: ${{ runner.temp }}/release.jks
+          KEY_ALIAS: defi-analytics
+          STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+        run: gradle assembleRelease bundleRelease --no-daemon
+
+      - name: Remove keystore
+        if: always()
+        run: shred -u "$RUNNER_TEMP/release.jks" 2>/dev/null || rm -f "$RUNNER_TEMP/release.jks"
+
+      - name: Upload debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: DeFiAnalytics-debug-APK
+          path: app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Upload release APK
+        if: steps.ks.outputs.has == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: DeFiAnalytics-APK
+          path: app/build/outputs/apk/release/*.apk
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Upload release AAB
+        if: steps.ks.outputs.has == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: DeFiAnalytics-AAB
+          path: app/build/outputs/bundle/release/*.aab
+          if-no-files-found: error
+          retention-days: 30

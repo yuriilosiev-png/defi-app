@@ -1,0 +1,16 @@
+{
+  "versionCode": 1,
+  "versionName": "1.0.0",
+  "notes": {
+    "ru": [
+      "Первая версия Android-приложения",
+      "Приложение работает офлайн-оболочкой, данные загружаются из публичных API",
+      "Баннер обновления: покажет, что нового, и установит версию в один тап"
+    ],
+    "en": [
+      "First Android release",
+      "Offline app shell, data is loaded from public APIs",
+      "Update banner: shows what changed and installs the new version in one tap"
+    ]
+  }
+}

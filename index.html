@@ -2,6 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src https:; manifest-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0a0e1a">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1453,8 +1454,8 @@ html, body { overflow-x: hidden; max-width: 100%; }
                 <div style="display:flex;align-items:center;gap:8px">
                   <span style="font-size:16px">📍</span>
                   <div>
-                    <div style="font-size:13px;font-weight:700" id="lbl-alert-range-title">Выход из диапазона</div>
-                    <div style="font-size:11px;color:var(--muted2)" id="lbl-alert-range-desc">Uniswap пул вышел из диапазона</div>
+                    <div style="font-size:13px;font-weight:700">Выход из диапазона</div>
+                    <div style="font-size:11px;color:var(--muted2)">Uniswap пул вышел из диапазона</div>
                   </div>
                 </div>
                 <div id="alert-range-toggle" onclick="tgToggle('alert-range-enabled')"
@@ -1475,14 +1476,14 @@ html, body { overflow-x: hidden; max-width: 100%; }
                     <div style="font-size:11px;color:var(--muted2)" id="lbl-alert-price-desc">Алерт при пробое уровня</div>
                   </div>
                 </div>
-                <button id="btn-add-level" onclick="tgAddPriceLevel()"
+                <button onclick="tgAddPriceLevel()"
                   style="background:rgba(0,229,255,0.1);border:1px solid rgba(0,229,255,0.3);border-radius:8px;padding:5px 10px;color:var(--accent);font-size:12px;font-weight:700;cursor:pointer;touch-action:manipulation;white-space:nowrap;font-family:inherit">
                   + Уровень
                 </button>
               </div>
               <!-- Динамический список уровней -->
               <div id="price-levels-list">
-                <div id="lbl-price-levels-empty" style="font-size:11px;color:var(--muted2);text-align:center;padding:8px 0">Нажми «+ Уровень» чтобы создать алерт</div>
+                <div style="font-size:11px;color:var(--muted2);text-align:center;padding:8px 0">Нажми «+ Уровень» чтобы создать алерт</div>
               </div>
             </div>
 
@@ -1496,88 +1497,12 @@ html, body { overflow-x: hidden; max-width: 100%; }
         </div>
       </div>
 
-      <!-- ── PUSH УВЕДОМЛЕНИЯ ── -->
-      <div style="background:var(--surface);border:1px solid rgba(16,185,129,0.35);border-radius:18px;overflow:visible">
-        <div style="padding:14px 16px;background:rgba(16,185,129,0.08);border-bottom:1px solid rgba(16,185,129,0.2);display:flex;align-items:center;gap:10px">
-          <span style="font-size:20px">🔔</span>
-          <div style="flex:1">
-            <div style="font-size:14px;font-weight:800">Push-уведомления</div>
-            <div style="font-size:11px;color:var(--muted2);margin-top:1px">Как у биржи — прямо на экран телефона</div>
-          </div>
-          <div id="push-status-dot" style="width:10px;height:10px;border-radius:50%;background:var(--border2)"></div>
-        </div>
-        <div style="padding:14px 16px;display:flex;flex-direction:column;gap:10px">
-          <div style="background:rgba(16,185,129,0.06);border:1px dashed rgba(16,185,129,0.25);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--muted2);line-height:1.7">
-            <b style="color:var(--green)">Как подключить:</b><br>
-            1. Подключи Telegram (выше) — нужен chat_id<br>
-            2. Нажми «Включить Push» → разреши уведомления<br>
-            3. Пуши будут приходить <b style="color:var(--text)">одновременно с Telegram</b>
-          </div>
-          <button id="push-enable-btn" onclick="pushEnable()"
-            style="width:100%;padding:13px;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.35);border-radius:12px;color:var(--green);font-size:14px;font-weight:700;cursor:pointer;touch-action:manipulation;font-family:inherit;transition:all .2s">
-            🔔 Включить Push-уведомления
-          </button>
-          <div style="font-size:11px;color:var(--muted2);text-align:center;line-height:1.5">
-            Работает в браузере и PWA на Android/iOS.<br>
-            Требует файл <b>sw.js</b> в корне сайта.
-          </div>
-        </div>
-      </div>
-
-      <!-- ── NTFY PUSH УВЕДОМЛЕНИЯ ── -->
-      <div style="background:var(--surface);border:1px solid rgba(124,58,237,0.4);border-radius:18px;overflow:visible">
-        <div style="padding:14px 16px;background:rgba(124,58,237,0.08);border-bottom:1px solid rgba(124,58,237,0.2);display:flex;align-items:center;gap:10px">
-          <span style="font-size:20px">🔔</span>
-          <div style="flex:1">
-            <div style="font-size:14px;font-weight:800" id="lbl-ntfy-title">Push-уведомления на телефон</div>
-            <div style="font-size:11px;color:var(--muted2);margin-top:1px" id="lbl-ntfy-subtitle">Мгновенные пуши без Telegram</div>
-          </div>
-          <div id="ntfy-status-dot" style="width:10px;height:10px;border-radius:50%;background:var(--border2)"></div>
-        </div>
-        <div style="padding:14px 16px;display:flex;flex-direction:column;gap:10px">
-          <!-- Инструкция -->
-          <div style="background:rgba(124,58,237,0.06);border:1px dashed rgba(124,58,237,0.25);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--muted2);line-height:1.7">
-            <b style="color:var(--accent2)" id="lbl-ntfy-steps-title">Подключение за 2 шага:</b><br>
-            <span id="lbl-ntfy-step1">1. Установи приложение</span> <b style="color:var(--text)">ntfy</b> <span id="lbl-ntfy-step1b">на телефон (бесплатно)</span><br>
-            <span id="lbl-ntfy-step2">2. Придумай уникальный топик ниже → нажми «Подключить»</span>
-          </div>
-          <!-- Топик -->
-          <div style="display:flex;gap:8px">
-            <input id="ntfy-topic" type="text" placeholder="defi-alerts-мойтопик"
-              style="flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 12px;color:var(--text);font-size:13px;outline:none;font-family:monospace;min-width:0"
-              oninput="ntfySaveConfig()" autocomplete="off" autocorrect="off" spellcheck="false">
-            <button onclick="ntfyConnect()"
-              style="padding:10px 16px;background:linear-gradient(135deg,var(--accent2),#4f46e5);border:none;border-radius:10px;color:#fff;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;touch-action:manipulation;flex-shrink:0">
-              🔔 <span id="lbl-ntfy-connect-btn">Подключить</span>
-            </button>
-          </div>
-          <!-- Ссылка на ntfy -->
-          <div style="display:flex;gap:8px">
-            <a href="https://play.google.com/store/apps/details?id=io.heckel.ntfy" target="_blank"
-              style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:10px;background:rgba(124,58,237,0.1);border:1px solid rgba(124,58,237,0.3);border-radius:10px;color:var(--accent2);font-size:12px;font-weight:700;text-decoration:none">
-              📱 Android (Google Play)
-            </a>
-            <a href="https://apps.apple.com/app/ntfy/id1625396347" target="_blank"
-              style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:10px;background:rgba(124,58,237,0.1);border:1px solid rgba(124,58,237,0.3);border-radius:10px;color:var(--accent2);font-size:12px;font-weight:700;text-decoration:none">
-              🍎 iOS (App Store)
-            </a>
-          </div>
-          <!-- Статус -->
-          <div id="ntfy-connect-status" style="display:none;border-radius:10px;padding:10px 12px;font-size:12px;font-weight:700;text-align:center"></div>
-          <!-- Тест -->
-          <button onclick="ntfySendTest()"
-            style="width:100%;padding:12px;background:rgba(124,58,237,0.1);border:1px solid rgba(124,58,237,0.3);border-radius:10px;color:var(--accent2);font-size:13px;font-weight:700;cursor:pointer;touch-action:manipulation">
-            🔔 <span id="lbl-ntfy-test-btn">Отправить тестовый Push</span>
-          </button>
-        </div>
-      </div>
-
       <!-- Профиль -->
       <div style="background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:24px 16px;text-align:center">
         <div style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--accent2),var(--accent));display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:800;margin:0 auto 14px;color:#fff;box-shadow:0 0 30px rgba(124,58,237,0.4)">YL</div>
         <div style="font-size:18px;font-weight:800;margin-bottom:4px">Yurii Losev</div>
         <div style="font-size:12px;color:var(--accent);font-family:\'Space Mono\',monospace;margin-bottom:12px">@Losiev11</div>
-        <div id="lbl-bio" style="font-size:13px;color:var(--muted2);line-height:1.7;margin-bottom:20px;padding:0 8px">Практикующий DeFi инвестор. Работаю с Aave, Uniswap, GMX и опционными стратегиями каждый день — не в теории, а на реальных деньгах.</div>
+        <div id="lbl-bio" style="font-size:13px;color:var(--muted2);line-height:1.7;margin-bottom:20px;padding:0 8px">Практикующий DeFi трейдер. Работаю с Aave, Uniswap, GMX и опционными стратегиями каждый день — не в теории, а на реальных деньгах.</div>
         <a id="lbl-tg-btn" href="https://t.me/Losiev11" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:10px;padding:16px;background:linear-gradient(135deg,#0088cc,#0066aa);border-radius:14px;color:white;font-size:15px;font-weight:800;text-decoration:none;font-family:'Syne',sans-serif;box-shadow:0 4px 20px rgba(0,136,204,0.3)">✈️ Написать в Telegram</a>
       </div>
 
@@ -1643,12 +1568,41 @@ html, body { overflow-x: hidden; max-width: 100%; }
   </div>
 </nav>
 
+<!-- UPDATE BANNER — «Доступна новая версия» (показывается только в Android-приложении) -->
+<div id="upd-banner" role="alert" aria-live="polite">
+  <div class="upd-head">
+    <span class="upd-ico">⬆️</span>
+    <div><div class="upd-title" id="upd-title"></div><div class="upd-ver" id="upd-ver"></div></div>
+  </div>
+  <div class="upd-notes-title" id="upd-notes-title"></div>
+  <ul id="upd-notes"></ul>
+  <div class="upd-actions">
+    <button id="upd-later" onclick="updLater()"></button>
+    <button id="upd-install" onclick="updInstall()"></button>
+  </div>
+</div>
+
 <!-- HF ALERT BANNER -->
 <div id="hf-alert" style="display:none;position:fixed;bottom:calc(var(--tab-h) + 12px + var(--safe-b));left:50%;transform:translateX(-50%);z-index:500;padding:12px 20px;border-radius:14px;font-size:13px;font-weight:700;font-family:'Syne',sans-serif;text-align:center;box-shadow:0 4px 24px rgba(0,0,0,0.5);backdrop-filter:blur(8px);white-space:nowrap;animation:slideUp 0.3s ease"></div>
 <style>
   @keyframes slideUp{from{transform:translateX(-50%) translateY(20px);opacity:0}to{transform:translateX(-50%) translateY(0);opacity:1}}
   #hf-alert.danger{background:rgba(239,68,68,0.95);color:#fff;border:1px solid rgba(239,68,68,0.5)}
   #hf-alert.warning{background:rgba(245,158,11,0.95);color:#fff;border:1px solid rgba(245,158,11,0.5)}
+
+  /* ─── Баннер «Доступно обновление» (только внутри Android-приложения) ─── */
+  #upd-banner{display:none;position:fixed;left:12px;right:12px;bottom:calc(var(--tab-h) + 12px + var(--safe-b));z-index:650;max-height:60vh;overflow:auto;background:var(--surface);border:1px solid var(--accent);border-radius:16px;padding:14px 16px;box-shadow:0 8px 32px rgba(0,0,0,0.55);animation:updIn .3s ease}
+  #upd-banner.visible{display:block}
+  @keyframes updIn{from{transform:translateY(24px);opacity:0}to{transform:translateY(0);opacity:1}}
+  #upd-banner .upd-head{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+  #upd-banner .upd-ico{font-size:22px;line-height:1}
+  #upd-banner .upd-title{font-size:14px;font-weight:800;color:var(--text)}
+  #upd-banner .upd-ver{font-size:11px;font-family:'Space Mono',monospace;color:var(--accent)}
+  #upd-banner .upd-notes-title{font-size:10px;font-family:'Space Mono',monospace;text-transform:uppercase;letter-spacing:.06em;color:var(--muted2);margin:10px 0 4px}
+  #upd-banner ul{margin:0;padding-left:18px;font-size:12px;line-height:1.55;color:var(--text)}
+  #upd-banner .upd-actions{display:flex;gap:8px;margin-top:12px}
+  #upd-banner button{flex:1;padding:10px 12px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;touch-action:manipulation;font-family:inherit}
+  #upd-banner #upd-later{background:transparent;border:1px solid var(--border);color:var(--muted2)}
+  #upd-banner #upd-install{background:var(--accent);border:none;color:#000}
 
 .sheet-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.72);z-index:500;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
 .sheet-overlay.open{display:block}
@@ -1722,7 +1676,7 @@ var TR = {
     apy_apr:'APY/APR',income_mo:'Доход/мес',
     total_deposited:'Всего внёс',total_earned:'Заработано',total_withdrawn:'Снято',net_profit:'Чистая прибыль',
     growth_chart:'P&L — кривая прибыльности',chart_hint:'Добавь хотя бы одну запись дохода',
-    journal_empty:'Журнал пуст',journal_empty_sub:'Добавь первую запись',pf_history_title:'История портфеля',
+    journal_empty:'Журнал пуст',journal_empty_sub:'Добавь первую запись',pf_history_title:'История портфеля',upd_title:'Доступна новая версия',upd_ver:'Версия',upd_notes:'Что изменилось',upd_install:'Установить',upd_later:'Позже',
     add_entry:'+ Запись',
     deposit_type:'Пополнение',withdraw_type:'Снятие',income_type:'Доход с пула',reward_type:'Награды',fee_type:'Комиссия',
     strategy_title:'Стратегия',strategy_now:'Стратегия сейчас',
@@ -1767,7 +1721,6 @@ var TR = {
     tg_test_btn:'Отправить тестовое сообщение',
     alert_hf_desc:'Уведомить когда HF упадёт ниже',hf_forecast_lbl:'Прогноз HF=1.1',hf_forecast_desc:'Алерт за',hf_forecast_hours:'ч до',
     alert_range_title:'Выход из диапазона', alert_range_desc:'Пул вышел из диапазона',
-    add_level_btn:'+ Уровень', price_levels_empty:'Нажми «+ Уровень» чтобы создать алерт',
     alert_price_title:'Цена актива', alert_price_desc:'Пробой уровня вверх или вниз',
     alert_asset:'Актив', alert_level:'Уровень $',
     opt_hf_once:'Один раз', opt_hf_every:'Каждый раз',
@@ -1777,8 +1730,7 @@ var TR = {
     lend_suffix:'(лендинг)', custom_source:'— Другой источник —',
     qty_placeholder:'введи кол-во',
     contact_title_full:'✈️ Связь и помощь',
-    support_dev_full:'☕ Поддержать разработку',
-    proto_collateral_lbl:'Залог'
+    support_dev_full:'☕ Поддержать разработку'
   },
   en: {
     tab_home:'Home',tab_positions:'Positions',tab_journal:'Journal',tab_strategy:'Strategy',tab_contact:'Contact',
@@ -1794,7 +1746,7 @@ var TR = {
     in_range:'✅ In range',out_of_range:'🚨 Out of range',apy_apr:'APY/APR',income_mo:'Income/mo',
     total_deposited:'Total Deposited',total_earned:'Total Earned',total_withdrawn:'Withdrawn',net_profit:'Net Profit',
     growth_chart:'P&L — Profitability Curve',chart_hint:'Add at least one income entry',
-    journal_empty:'Journal is empty',journal_empty_sub:'Add your first entry.',pf_history_title:'Portfolio History',
+    journal_empty:'Journal is empty',journal_empty_sub:'Add your first entry.',pf_history_title:'Portfolio History',upd_title:'New version available',upd_ver:'Version',upd_notes:'What changed',upd_install:'Install',upd_later:'Later',
     add_entry:'+ Entry',deposit_type:'Deposit',withdraw_type:'Withdrawal',income_type:'Pool Income',reward_type:'Rewards',fee_type:'Fee',
     strategy_title:'Strategy',strategy_now:'Strategy Status',
     profitable:'✅ Profitable',unprofitable:'❌ Unprofitable',no_strategy_data:'No data',enter_loan_pools:'Enter loan and pool data',
@@ -1827,7 +1779,6 @@ var TR = {
     tg_test_btn:'Send test message',
     alert_hf_desc:'Notify when HF drops below',hf_forecast_lbl:'Forecast HF=1.1',hf_forecast_desc:'Alert at',hf_forecast_hours:'h before',
     alert_range_title:'Out of range', alert_range_desc:'Pool exited price range',
-    add_level_btn:'+ Level', price_levels_empty:'Press «+ Level» to create an alert',
     alert_price_title:'Asset price', alert_price_desc:'Level breakout up or down',
     alert_asset:'Asset', alert_level:'Level $',
     opt_hf_once:'Once', opt_hf_every:'Every time',
@@ -1837,8 +1788,7 @@ var TR = {
     lend_suffix:'(lending)', custom_source:'— Other source —',
     qty_placeholder:'enter qty',
     contact_title_full:'✈️ Contact & Support',
-    support_dev_full:'☕ Support development',
-    proto_collateral_lbl:'Collateral'
+    support_dev_full:'☕ Support development'
   }
 };
 
@@ -2321,6 +2271,14 @@ function jrnChangeMonth(dir){
   renderJournal();
 }
 
+// fetch с таймаутом — зависший запрос не должен держать весь цикл цен
+function fetchT(url, ms, opts){
+  var ctrl = new AbortController();
+  var tm = setTimeout(function(){ ctrl.abort(); }, ms || 6000);
+  return fetch(url, Object.assign({}, opts || {}, {signal: ctrl.signal}))
+    .finally(function(){ clearTimeout(tm); });
+}
+var _lastPriceFetch = 0;
 var livePrices = {...FALLBACK_PRICES};
 var _priceTimer = null;
 
@@ -2330,13 +2288,15 @@ function fmtPrice(p){ return p>=1000?'$'+Math.round(p).toLocaleString():p>=1?'$'
 function fmt(n){ return '$'+(n||0).toFixed(2); }
 
 // ─── SILVER FALLBACK (из второго файла, без изменений) ───
+var _silverTs = 0;
 async function fetchSilverFallback(){
+  if(Date.now() - _silverTs < 10*60*1000) return;   // 4 публичных прокси раз в минуту — перебор
   // XAG/USD — тройская унция серебра в долларах
   const sources = [
     // allorigins.win — CORS прокси для metals.live
     async () => {
       const target = 'https://api.metals.live/v1/spot';
-      const r = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(target));
+      const r = await fetchT('https://api.allorigins.win/get?url=' + encodeURIComponent(target));
       const d = await r.json();
       const arr = JSON.parse(d.contents);
       const item = arr.find(x => x.silver !== undefined);
@@ -2344,20 +2304,20 @@ async function fetchSilverFallback(){
     },
     // corsproxy.io
     async () => {
-      const r = await fetch('https://corsproxy.io/?' + encodeURIComponent('https://api.metals.live/v1/spot'));
+      const r = await fetchT('https://corsproxy.io/?' + encodeURIComponent('https://api.metals.live/v1/spot'));
       const arr = await r.json();
       const item = arr.find(x => x.silver !== undefined);
       return item ? parseFloat(item.silver) : null;
     },
     // Frankfurter — официальный ECB курс XAG
     async () => {
-      const r = await fetch('https://api.frankfurter.app/latest?from=XAG&to=USD');
+      const r = await fetchT('https://api.frankfurter.app/latest?from=XAG&to=USD');
       const d = await r.json();
       return d?.rates?.USD ? parseFloat(d.rates.USD) : null;
     },
     // Coinbase
     async () => {
-      const r = await fetch('https://api.coinbase.com/v2/prices/XAG-USD/spot');
+      const r = await fetchT('https://api.coinbase.com/v2/prices/XAG-USD/spot');
       const d = await r.json();
       return d?.data?.amount ? parseFloat(d.data.amount) : null;
     },
@@ -2367,7 +2327,7 @@ async function fetchSilverFallback(){
     try{
       const price = await src();
       if(price && price > 5 && price < 500){
-        livePrices['silver'] = price;
+        livePrices['silver'] = price; _silverTs = Date.now();
         const el = document.getElementById('t_silver');
         if(el) el.textContent = fmtPrice(price);
         console.log('Silver price loaded:', price);
@@ -2384,6 +2344,10 @@ async function fetchSilverFallback(){
 
 async function fetchPrices(){
   if(_priceTimer){ clearTimeout(_priceTimer); _priceTimer=null; }
+  // В фоне цикл останавливается (алерты и так шлются только при видимой странице);
+  // visibilitychange запустит его снова при возврате.
+  if(document.hidden && _lastPriceFetch) return;
+  _lastPriceFetch = Date.now();
 
   // Показываем резервные цены сразу
   updateTickerDisplay();
@@ -2401,20 +2365,20 @@ async function fetchPrices(){
     'https://api2.binance.com/api/v3/ticker/price?symbols=',
     'https://api3.binance.com/api/v3/ticker/price?symbols=',
   ];
-  for(var _bi=0; _bi<binanceEndpoints.length && !fetched; _bi++){
-    try{
-      const r = await fetch(binanceEndpoints[_bi]+JSON.stringify(binanceBaseSyms));
-      if(r.ok){
-        const data = await r.json();
-        data.forEach(function(item){
-          const cgId = binanceBaseMap[item.symbol];
-          if(cgId) livePrices[cgId] = parseFloat(item.price);
-        });
-        fetched = true;
-        console.log('Prices: Binance endpoint', _bi, 'OK');
-      }
-    }catch(e){ console.log('Binance endpoint', _bi, 'failed:', e.message); }
-  }
+  var _fresh = {};   // базовые монеты, обновлённые в ЭТОМ цикле (а не стартовые FALLBACK)
+  try{
+    const data = await Promise.any(binanceEndpoints.map(function(u){
+      return fetchT(u+JSON.stringify(binanceBaseSyms), 4000).then(function(r){
+        if(!r.ok) throw new Error('HTTP '+r.status);
+        return r.json();
+      });
+    }));
+    data.forEach(function(item){
+      const cgId = binanceBaseMap[item.symbol];
+      if(cgId){ livePrices[cgId] = parseFloat(item.price); _fresh[cgId] = 1; }
+    });
+    fetched = true;
+  }catch(e){ console.log('Binance: все зеркала недоступны'); }
 
   // ── 2. Bybit API (резерв, пользователь уже использует Bybit) ──
   if(!fetched){
@@ -2423,11 +2387,11 @@ async function fetchPrices(){
                          ['SOLUSDT','solana'],['BNBUSDT','binancecoin'],
                          ['XRPUSDT','ripple'],['AVAXUSDT','avalanche-2']];
       const promises = bybitSyms.map(function(pair){
-        return fetch('https://api.bybit.com/v5/market/tickers?category=spot&symbol='+pair[0])
+        return fetchT('https://api.bybit.com/v5/market/tickers?category=spot&symbol='+pair[0])
           .then(function(r){ return r.json(); })
           .then(function(d){
             var price = parseFloat(d?.result?.list?.[0]?.lastPrice||0);
-            if(price > 0) livePrices[pair[1]] = price;
+            if(price > 0){ livePrices[pair[1]] = price; _fresh[pair[1]] = 1; }
           }).catch(function(){});
       });
       await Promise.all(promises);
@@ -2436,15 +2400,17 @@ async function fetchPrices(){
   }
 
   // ── 3. CryptoCompare — всегда, для любых недостающих базовых ──
-  try{
-    const r2 = await fetch('https://min-api.cryptocompare.com/data/pricemulti?fsyms=BTC,ETH,SOL,BNB,XRP,AVAX&tsyms=USD');
+  var _baseIds = ['bitcoin','ethereum','solana','binancecoin','ripple','avalanche-2'];
+  if(_baseIds.some(function(id){ return !_fresh[id]; })) try{
+    const r2 = await fetchT('https://min-api.cryptocompare.com/data/pricemulti?fsyms=BTC,ETH,SOL,BNB,XRP,AVAX&tsyms=USD');
     if(r2.ok){
       const d2 = await r2.json();
       const ccBase = {BTC:'bitcoin',ETH:'ethereum',SOL:'solana',
                       BNB:'binancecoin',XRP:'ripple',AVAX:'avalanche-2'};
       Object.keys(ccBase).forEach(function(sym){
-        if(d2[sym]?.USD && (!livePrices[ccBase[sym]]||livePrices[ccBase[sym]]<=0))
-          livePrices[ccBase[sym]] = d2[sym].USD;
+        if(d2[sym]?.USD && !_fresh[ccBase[sym]]){
+          livePrices[ccBase[sym]] = d2[sym].USD; _fresh[ccBase[sym]] = 1;
+        }
       });
       fetched = true;
       console.log('Prices: CryptoCompare base OK');
@@ -2452,18 +2418,17 @@ async function fetchPrices(){
   }catch(e){ console.log('CryptoCompare base failed:', e.message); }
 
   // ── 4. CoinGecko — для всех базовых если ещё не загружены ────
-  var baseStillMissing = ['bitcoin','ethereum','solana','binancecoin','ripple','avalanche-2']
-    .filter(function(id){ return !livePrices[id]||livePrices[id]<=0; });
+  var baseStillMissing = _baseIds.filter(function(id){ return !_fresh[id]; });
   if(baseStillMissing.length>0){
     try{
-      const r3 = await fetch(
+      const r3 = await fetchT(
         'https://api.coingecko.com/api/v3/simple/price?ids='+baseStillMissing.join(',')+'&vs_currencies=usd'
       );
       if(r3.ok){
         const d3 = await r3.json();
         baseStillMissing.forEach(function(id){
           var p = d3[id]?.usd;
-          if(p>0) livePrices[id] = p;
+          if(p>0){ livePrices[id] = p; _fresh[id] = 1; }
         });
         fetched = true;
         console.log('Prices: CoinGecko base OK');
@@ -2474,7 +2439,7 @@ async function fetchPrices(){
   // Обновляем золото / PAX Gold через CoinGecko отдельно если не загрузилось
   if(!livePrices['pax-gold'] || livePrices['pax-gold'] === 3100){
     try{
-      const rg = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=pax-gold&vs_currencies=usd');
+      const rg = await fetchT('https://api.coingecko.com/api/v3/simple/price?ids=pax-gold&vs_currencies=usd');
       if(rg.ok){ const dg = await rg.json(); if(dg['pax-gold']?.usd) livePrices['pax-gold'] = dg['pax-gold'].usd; }
     }catch(e){}
   }
@@ -2610,7 +2575,7 @@ async function fetchExtendedPrices(){
     var binExtDone = false;
     for(var _be=0; _be<binExtEndpoints.length && !binExtDone; _be++){
       try{
-        var rBin = await fetch(binExtEndpoints[_be]+JSON.stringify(binSyms));
+        var rBin = await fetchT(binExtEndpoints[_be]+JSON.stringify(binSyms));
         if(rBin.ok){
           var dataBin = await rBin.json();
           dataBin.forEach(function(item){
@@ -2635,7 +2600,7 @@ async function fetchExtendedPrices(){
     });
     if(ccSyms.length > 0){
       try{
-        var r2 = await fetch('https://min-api.cryptocompare.com/data/pricemulti?fsyms='+ccSyms.join(',')+'&tsyms=USD');
+        var r2 = await fetchT('https://min-api.cryptocompare.com/data/pricemulti?fsyms='+ccSyms.join(',')+'&tsyms=USD');
         if(r2.ok){
           var d2 = await r2.json();
           var ccGot = 0;
@@ -2660,7 +2625,7 @@ async function fetchExtendedPrices(){
     ];
     for(var _cg=0; _cg<cgEndpoints.length; _cg++){
       try{
-        var r3 = await fetch(cgEndpoints[_cg]);
+        var r3 = await fetchT(cgEndpoints[_cg]);
         if(r3.ok){
           var d3 = await r3.json();
           var cgGot = 0;
@@ -2924,7 +2889,7 @@ function addPickerSelected(){
   });
   _pickerSelected = {};
   renderSheetAssets();
-  saveState();
+  saveS();
   closeAssetPicker();
 }
 
@@ -4227,7 +4192,6 @@ function renderStaticTexts(){
     'lbl-alert-hf-desc':'alert_hf_desc','lbl-hf-forecast-lbl':'hf_forecast_lbl','lbl-hf-forecast-desc':'hf_forecast_desc','lbl-hf-forecast-hours':'hf_forecast_hours',
     'lbl-alert-range-title':'alert_range_title', 'lbl-alert-range-desc':'alert_range_desc',
     'lbl-alert-price-title':'alert_price_title', 'lbl-alert-price-desc':'alert_price_desc',
-    'btn-add-level':'add_level_btn', 'lbl-price-levels-empty':'price_levels_empty',
     'lbl-alert-asset':'alert_asset', 'lbl-alert-level':'alert_level',
     'lbl-calc-btn':'lp_calc_btn'
   };
@@ -4235,8 +4199,6 @@ function renderStaticTexts(){
     var el=document.getElementById(id);
     if(el) el.textContent=t(ids[id]);
   });
-  // Перерисовываем ценовые уровни чтобы обновить пустую подпись
-  if(typeof tgRenderPriceLevels === 'function') tgRenderPriceLevels();
   // ── Select option text translation ──
   var optMap = {
     'opt-hf-once': 'opt_hf_once', 'opt-hf-every': 'opt_hf_every',
@@ -4281,9 +4243,8 @@ function renderDocsScreen(){
   var el = document.getElementById('docs-content');
   if(!el) return;
   var shDocs = document.getElementById('sh-docs');
-  if(shDocs) shDocs.textContent = ru ? '📚 Документация' : '📚 Documentation';
+  if(shDocs) shDocs.textContent = ru ? '📚 Инструкция' : '📚 Guide';
 
-  // ── Helper builders ──────────────────────────────────────
   function s(bg, border, icon, title, body){
     return '<div style="background:var(--surface);border:1px solid '+(border||'var(--border)')+';border-radius:18px;overflow:hidden;margin-bottom:2px">'+
       '<div style="padding:14px 16px;background:'+(bg||'rgba(0,229,255,0.06)')+';border-bottom:1px solid '+(border||'var(--border)')+';display:flex;align-items:center;gap:10px">'+
@@ -4322,387 +4283,267 @@ function renderDocsScreen(){
 
   var html = '';
 
-  // ─── 1. OVERVIEW ────────────────────────────────────────────
+  // ─── 1. ЧТО ЭТО ───────────────────────────────────────────
   var overviewBody = ru
-    ? '<b style="color:var(--text)">DeFi Analytics</b> — персональный инструмент для управления стратегией залог → займ → пулы ликвидности.<br><br>'+
-      'Все данные хранятся <b style="color:var(--text)">локально в браузере</b> (localStorage). Приложение не отправляет ваши позиции на серверы.<br><br>'+
-      '<b style="color:var(--text)">6 разделов:</b><br>'+
-      '🏠 <b>Главная</b> — сводка портфеля, HF, P&L<br>'+
-      '📊 <b>Позиции</b> — залог, займ, калькулятор HF<br>'+
-      '📓 <b>Журнал</b> — история операций, P&L график<br>'+
-      '⚡ <b>Стратегия</b> — анализ займа и LP симулятор<br>'+
-      '✈️ <b>Связь</b> — Telegram алерты<br>'+
-      '📚 <b>Документация</b> — эта страница'
-    : '<b style="color:var(--text)">DeFi Analytics</b> — a personal tool for managing the collateral → loan → liquidity pools strategy.<br><br>'+
-      'All data is stored <b style="color:var(--text)">locally in your browser</b> (localStorage). The app never sends your positions to any server.<br><br>'+
-      '<b style="color:var(--text)">6 screens:</b><br>'+
-      '🏠 <b>Home</b> — portfolio summary, HF, P&L<br>'+
-      '📊 <b>Positions</b> — collateral, loan, HF calculator<br>'+
-      '📓 <b>Journal</b> — transaction history, P&L chart<br>'+
-      '⚡ <b>Strategy</b> — loan analysis & LP simulator<br>'+
-      '✈️ <b>Contact</b> — Telegram alerts<br>'+
-      '📚 <b>Docs</b> — this page';
+    ? 'Сделал для себя, пока вёл позиции в Aave и считал HF в голове или в таблицах. Надоело — написал это приложение. Теперь открываю с телефона, смотрю одним взглядом что происходит с позицией и иду дальше.<br><br>'+
+      '<b style="color:var(--text)">Всё хранится у тебя</b> — никаких серверов, никаких аккаунтов. localStorage браузера, всё.<br><br>'+
+      '<b style="color:var(--text)">Шесть разделов:</b><br>'+
+      '🏠 <b>Главная</b> — стоимость портфеля, HF, доход за месяц<br>'+
+      '📊 <b>Позиции</b> — залог, займ, симулятор падения<br>'+
+      '📓 <b>Журнал</b> — история движений капитала, P&L кривая<br>'+
+      '⚡ <b>Стратегия</b> — прибыльна ли стратегия сейчас, LP симулятор<br>'+
+      '✈️ <b>Связь</b> — Telegram алерты на HF и цену<br>'+
+      '📚 <b>Инструкция</b> — эта страница'
+    : 'Built it for myself while running positions on Aave and doing HF math in my head or in spreadsheets. Got annoyed enough to write this. Now I open it on my phone, glance at what\'s happening with the position, and move on.<br><br>'+
+      '<b style="color:var(--text)">Everything stays on your device</b> — no servers, no accounts. Just localStorage, that\'s it.<br><br>'+
+      '<b style="color:var(--text)">Six screens:</b><br>'+
+      '🏠 <b>Home</b> — portfolio value, HF, monthly income<br>'+
+      '📊 <b>Positions</b> — collateral, loan, crash simulator<br>'+
+      '📓 <b>Journal</b> — capital flow history, P&L chart<br>'+
+      '⚡ <b>Strategy</b> — is the strategy profitable right now, LP simulator<br>'+
+      '✈️ <b>Contact</b> — Telegram alerts on HF and price<br>'+
+      '📚 <b>Guide</b> — this page';
   html += s('linear-gradient(135deg,rgba(0,229,255,0.08),rgba(124,58,237,0.06))','var(--border)','⚡',
-    ru ? 'Что такое DeFi Analytics' : 'About DeFi Analytics', overviewBody);
+    ru ? 'Что это и зачем' : 'What this is and why', overviewBody);
 
-  // ─── 2. HOME SCREEN ─────────────────────────────────────────
+  // ─── 2. ГЛАВНАЯ ───────────────────────────────────────────
   var homeBody = ru
-    ? '<b style="color:var(--text)">Тикер</b> — живые цены BTC, ETH, SOL, BNB, XRP, AVAX, GOLD, XAG. Обновляются каждые 60 сек через CoinGecko API.<br><br>'+
-      '<b style="color:var(--text)">Стоимость портфеля</b> — сумма всех активов залога + все пулы, пересчитанная по текущим ценам.<br><br>'+
-      '<b style="color:var(--text)">Быстрые метрики:</b><br>'+
-      '• <b>Залог</b> — суммарная стоимость активов в выбранном протоколе<br>'+
-      '• <b>Займ</b> — ваш активный долг в $<br>'+
-      '• <b>Пулы</b> — суммарный баланс всех LP позиций<br><br>'+
-      '<b style="color:var(--text)">Health Factor (HF)</b> — индикатор безопасности позиции. Рассчитывается в реальном времени.<br><br>'+
-      '<b style="color:var(--text)">Доходность:</b><br>'+
-      '• Доход/мес — суммарный APR/APY пулов × сумма ÷ 12<br>'+
-      '• Чистая/мес — доход минус стоимость займа<br>'+
-      '• Стоимость долга — займ × ставка займа ÷ 12<br><br>'+
+    ? '<b style="color:var(--text)">Тикер вверху</b> — цены BTC, ETH, SOL, BNB, XRP, AVAX, золото, серебро. Обновляются каждую минуту через CoinGecko. Листаешь пальцем влево-вправо.<br><br>'+
+      '<b style="color:var(--text)">Стоимость портфеля</b> — сумма залога по текущим ценам плюс все пулы. Пересчитывается при каждом обновлении цен.<br><br>'+
+      '<b style="color:var(--text)">Четыре карточки:</b><br>'+
+      '• <b>Залог</b> — сколько стоит залог в протоколе прямо сейчас<br>'+
+      '• <b>Займ</b> — твой активный долг в $<br>'+
+      '• <b>Пулы</b> — сумма всех LP позиций<br>'+
+      '• <b>HF</b> — цветной индикатор безопасности. Зелёный — хорошо, красный — пора действовать<br><br>'+
+      '<b style="color:var(--text)">Блок доходности:</b><br>'+
+      '• Доход/мес — что зарабатывают пулы в среднем за месяц<br>'+
+      '• Стоимость долга/мес — сколько платишь за займ<br>'+
+      '• Чистая прибыль — разница<br><br>'+
       '<b style="color:var(--text)">ROI блок:</b><br>'+
-      '• ROI/мес = чистая прибыль ÷ портфель × 100%<br>'+
-      '• ROI/год = ROI/мес × 12<br>'+
-      '• Доход/деп = доход пулов ÷ сумму депозита'
-    : '<b style="color:var(--text)">Ticker</b> — live prices for BTC, ETH, SOL, BNB, XRP, AVAX, GOLD, XAG. Updated every 60 seconds via CoinGecko API.<br><br>'+
-      '<b style="color:var(--text)">Portfolio Value</b> — total of all collateral assets + all pools, recalculated at live prices.<br><br>'+
-      '<b style="color:var(--text)">Quick Metrics:</b><br>'+
-      '• <b>Collateral</b> — total value of assets in the selected protocol<br>'+
+      '• ROI/мес и ROI/год — от стоимости портфеля<br>'+
+      '• Доход/деп — доходность от суммы вложенных средств<br><br>'+
+      tip('Нажми на цену в тикере — откроется детальный выбор актива для добавления в залог.')
+    : '<b style="color:var(--text)">Ticker at the top</b> — live prices for BTC, ETH, SOL, BNB, XRP, AVAX, gold, silver. Updates every minute via CoinGecko. Swipe left-right to scroll.<br><br>'+
+      '<b style="color:var(--text)">Portfolio value</b> — collateral at current prices plus all pools. Recalculated on every price update.<br><br>'+
+      '<b style="color:var(--text)">Four cards:</b><br>'+
+      '• <b>Collateral</b> — what your collateral is worth in the protocol right now<br>'+
       '• <b>Loan</b> — your active debt in $<br>'+
-      '• <b>Pools</b> — total balance of all LP positions<br><br>'+
-      '<b style="color:var(--text)">Health Factor (HF)</b> — position safety indicator. Calculated in real time.<br><br>'+
-      '<b style="color:var(--text)">Income metrics:</b><br>'+
-      '• Income/mo — total pool APR × balance ÷ 12<br>'+
-      '• Net/mo — income minus debt cost<br>'+
-      '• Debt cost — loan × borrow rate ÷ 12<br><br>'+
+      '• <b>Pools</b> — total of all LP positions<br>'+
+      '• <b>HF</b> — colour-coded safety indicator. Green is fine, red means act<br><br>'+
+      '<b style="color:var(--text)">Income block:</b><br>'+
+      '• Income/mo — what the pools earn on average per month<br>'+
+      '• Debt cost/mo — what you pay for the loan<br>'+
+      '• Net profit — the difference<br><br>'+
       '<b style="color:var(--text)">ROI block:</b><br>'+
-      '• ROI/mo = net profit ÷ portfolio × 100%<br>'+
-      '• ROI/yr = ROI/mo × 12<br>'+
-      '• Income/dep = pool income ÷ deposit amount';
-  html += s('rgba(0,229,255,0.06)','var(--border)','🏠', ru ? 'Главная — обзор портфеля' : 'Home — portfolio overview', homeBody);
+      '• ROI/mo and ROI/yr — relative to portfolio value<br>'+
+      '• Income/dep — yield on deployed capital<br><br>'+
+      tip('Tap a price in the ticker to open detailed asset selection for adding to collateral.');
+  html += s('rgba(0,229,255,0.06)','var(--border)','🏠', ru ? 'Главная — что где находится' : 'Home — what\'s where', homeBody);
 
-  // ─── 3. HEALTH FACTOR ───────────────────────────────────────
+  // ─── 3. HEALTH FACTOR ─────────────────────────────────────
   var hfTable = tbl(
-    ['HF', ru?'Зона':'Zone', ru?'Статус':'Status', ru?'Действие':'Action'],
+    ['HF', ru?'Зона':'Zone', ru?'Что значит':'Meaning', ru?'Что делать':'Action'],
     [
-      ['≥ 2.0', badge(ru?'Зелёная':'Green','#10b981'), ru?'Безопасно':'Safe', ru?'Займ в норме':'Position healthy'],
-      ['1.6 – 2.0', badge(ru?'Голубая':'Cyan','#00e5ff'), ru?'Следи':'Monitor', ru?'Наблюдай за рынком':'Watch market conditions'],
-      ['1.4 – 1.6', badge(ru?'Жёлтая':'Yellow','#f59e0b'), ru?'Действуй':'Act now', ru?'Добавь залог или погаси долг':'Add collateral or repay debt'],
-      ['1.0 – 1.4', badge(ru?'Красная':'Red','#ef4444'), ru?'Риск!':'Risk!', ru?'Высокий риск ликвидации':'High liquidation risk'],
-      ['< 1.0', badge(ru?'Ликвидация':'Liquidation','#ef4444'), ru?'Ликвидация':'Liquidation', ru?'Протокол списывает залог':'Protocol seizes collateral'],
+      ['≥ 2.0', badge(ru?'Зелёная':'Green','#10b981'), ru?'Всё нормально':'All good', ru?'Можно не трогать':'Leave it'],
+      ['1.6 – 2.0', badge(ru?'Голубая':'Cyan','#00e5ff'), ru?'Немного тесно':'Getting tighter', ru?'Следи за рынком':'Watch the market'],
+      ['1.4 – 1.6', badge(ru?'Жёлтая':'Yellow','#f59e0b'), ru?'Напряжённо':'Tense', ru?'Добавь залог или закрой часть займа':'Add collateral or pay down some debt'],
+      ['1.0 – 1.4', badge(ru?'Красная':'Red','#ef4444'), ru?'Опасно':'Dangerous', ru?'Действуй прямо сейчас':'Act right now'],
+      ['< 1.0', badge(ru?'Ликвидация':'Liquidation','#ef4444'), ru?'Протокол забирает залог':'Protocol seizes collateral', ru?'Позиция закрыта принудительно':'Position forcibly closed'],
     ]
   );
   var hfBody = ru
-    ? '<b style="color:var(--text)">Что такое Health Factor?</b><br>'+
-      'HF — числовой индикатор безопасности твоей позиции. При HF = 1.0 начинается ликвидация залога. Чем выше HF — тем безопаснее.<br><br>'+
+    ? 'HF — это одно число, которое отвечает на вопрос «насколько я далеко от ликвидации». При HF = 1.0 протокол начинает продавать залог. Всё что выше — буфер.<br><br>'+
       hfTable+
-      '<b style="color:var(--text)">Формула зависит от протокола:</b><br><br>'+
+      '<br><b style="color:var(--text)">Формула — зависит от протокола:</b><br><br>'+
       '<b style="color:var(--orange)">🏦 Aave v3</b>'+
-      formula('HF = Σ(val_i × LT_i) / TotalDebt')+
-      'Каждый актив взвешивается по своему Liquidation Threshold (LT). Пример: BTC $10k × LT 78% + ETH $8k × LT 82.5% = взвешенный залог $11,380. При займе $6,000 → HF = 1.896<br><br>'+
+      formula('HF = Σ(стоимость_i × LT_i) / Долг')+
+      'Каждый актив залога взвешивается по своему Liquidation Threshold. BTC даёт 78% от стоимости, ETH — 82.5%. Чем выше LT, тем лучше этот актив «держит» займ.<br><br>'+
       '<b style="color:var(--orange)">🔵 Compound v3</b>'+
-      formula('HF = Σ(val_i × LiqCF_i) / TotalDebt')+
-      'Compound использует <b>Liquidation Collateral Factor</b> (LiqCF) — аналог LT в Aave, но значения выше (ETH = 93%, BTC = 90%). Рынок USDC Comet — заём только в USDC. У Compound нет нативного HF: приложение считает его по той же логике для удобства контроля риска.<br><br>'+
+      formula('HF = Σ(стоимость_i × LiqCF_i) / Долг (USDC)')+
+      'Compound использует Liquidation Collateral Factor. Значения выше чем в Aave: ETH = 93%, BTC = 90%. Но заём только в USDC — это ограничение.<br><br>'+
       '<b style="color:var(--orange)">🦋 Morpho Blue</b>'+
-      formula('HF = Σ(val_i × LLTV_i) / TotalDebt')+
-      'Morpho состоит из изолированных маркетов. Каждый маркет — одна пара (залог/займ) с единым LLTV, заданным при создании. Популярные маркеты: BTC/USDC LLTV 86%, ETH/USDC LLTV 86%, stablecoins LLTV до 91.5%. При мультиактивной позиции каждый актив трактуется как отдельный маркет со своим LLTV.<br><br>'+
+      formula('HF = Σ(стоимость_i × LLTV_i) / Долг')+
+      'Изолированные маркеты. Каждый маркет создаётся под конкретную пару с фиксированным LLTV. BTC/USDC и ETH/USDC работают с LLTV 86%. Стейблы — до 91.5%.<br><br>'+
       '<b style="color:var(--orange)">🌀 Euler v2</b>'+
-      formula('HF = Σ(val_i × CF_i) / (TotalDebt × BorrowFactor)')+
-      'Euler — модульная архитектура с <b>двусторонними факторами риска</b>:<br>'+
-      '• <b>Collateral Factor (CF)</b> — дисконт на залог (аналог LT, 83–91%)<br>'+
-      '• <b>Borrow Factor (BF)</b> — надбавка на долг (0.97 для волатильных займов)<br>'+
-      'Из-за BF эффективный долг = Долг × 0.97 → HF немного выше, чем по Aave-формуле. Для стейблкоин-займов BF ≈ 1.0. Данные по Prime Cluster.<br><br>'+
-      note('Симулятор падения и зоны HF 2.0 / 1.6 / 1.4 автоматически учитывают формулу выбранного протокола.')+
-      note('Рекомендуемый минимум для всех протоколов: HF ≥ 2.0.')
-    : '<b style="color:var(--text)">What is Health Factor?</b><br>'+
-      'HF is a numeric safety indicator for your position. At HF = 1.0 collateral liquidation begins. The higher the HF, the safer.<br><br>'+
+      formula('HF = Σ(стоимость_i × CF_i) / (Долг × BorrowFactor)')+
+      'Euler добавляет второй множитель на сторону долга — Borrow Factor 0.97. За счёт этого HF у Euler чуть выше при тех же условиях. Встроенный консерватизм протокола.<br><br>'+
+      note('Держи HF не ниже 2.0. Ниже — уже нервно. На сильных просадках рынка от 20–30% это даёт буфер.')
+    : 'HF is one number that answers the question "how far am I from liquidation". At HF = 1.0 the protocol starts selling collateral. Everything above is buffer.<br><br>'+
       hfTable+
-      '<b style="color:var(--text)">The formula depends on the protocol:</b><br><br>'+
+      '<br><b style="color:var(--text)">Formula — depends on the protocol:</b><br><br>'+
       '<b style="color:var(--orange)">🏦 Aave v3</b>'+
-      formula('HF = Σ(val_i × LT_i) / TotalDebt')+
-      'Each asset is weighted by its Liquidation Threshold (LT). Example: BTC $10k × LT 78% + ETH $8k × LT 82.5% = weighted collateral $11,380. With loan $6,000 → HF = 1.896<br><br>'+
+      formula('HF = Σ(value_i × LT_i) / Debt')+
+      'Each collateral asset is weighted by its Liquidation Threshold. BTC gives 78% of value, ETH — 82.5%. Higher LT means the asset "carries" more debt.<br><br>'+
       '<b style="color:var(--orange)">🔵 Compound v3</b>'+
-      formula('HF = Σ(val_i × LiqCF_i) / TotalDebt')+
-      'Compound uses <b>Liquidation Collateral Factor</b> (LiqCF) — similar to Aave\'s LT but higher values (ETH = 93%, BTC = 90%). The USDC Comet market only allows borrowing in USDC. Compound has no native HF — the app calculates it using the same logic for risk monitoring convenience.<br><br>'+
+      formula('HF = Σ(value_i × LiqCF_i) / Debt (USDC)')+
+      'Compound uses Liquidation Collateral Factor. Values are higher than Aave: ETH = 93%, BTC = 90%. But borrowing is USDC only — that\'s the constraint.<br><br>'+
       '<b style="color:var(--orange)">🦋 Morpho Blue</b>'+
-      formula('HF = Σ(val_i × LLTV_i) / TotalDebt')+
-      'Morpho consists of isolated markets. Each market is a single collateral/borrow pair with a fixed LLTV set at creation. Popular markets: BTC/USDC LLTV 86%, ETH/USDC LLTV 86%, stablecoins LLTV up to 91.5%. In multi-asset mode each asset is treated as a separate market with its own LLTV.<br><br>'+
+      formula('HF = Σ(value_i × LLTV_i) / Debt')+
+      'Isolated markets. Each market is created for a specific pair with a fixed LLTV. BTC/USDC and ETH/USDC run at LLTV 86%. Stablecoins go up to 91.5%.<br><br>'+
       '<b style="color:var(--orange)">🌀 Euler v2</b>'+
-      formula('HF = Σ(val_i × CF_i) / (TotalDebt × BorrowFactor)')+
-      'Euler has a modular architecture with <b>two-sided risk factors</b>:<br>'+
-      '• <b>Collateral Factor (CF)</b> — discount on collateral (similar to LT, 83–91%)<br>'+
-      '• <b>Borrow Factor (BF)</b> — premium on debt (0.97 for volatile borrows)<br>'+
-      'Because of BF, effective debt = Debt × 0.97 → HF is slightly higher than Aave-style. For stablecoin borrows BF ≈ 1.0. Data from Prime Cluster.<br><br>'+
-      note('The crash simulator and HF zone buttons (2.0 / 1.6 / 1.4) automatically account for the selected protocol\'s formula.')+
-      note('Recommended minimum for all protocols: HF ≥ 2.0.');
-  html += s('rgba(16,185,129,0.07)','var(--border)','❤️', ru ? 'Health Factor — формула и зоны' : 'Health Factor — formula & zones', hfBody);
+      formula('HF = Σ(value_i × CF_i) / (Debt × BorrowFactor)')+
+      'Euler adds a second multiplier on the debt side — Borrow Factor 0.97. Because of this, Euler HF reads slightly higher for the same conditions. Built-in protocol conservatism.<br><br>'+
+      note('Keep HF above 2.0. Below that it gets uncomfortable. On a 20–30% market dip, that buffer matters.');
+  html += s('rgba(16,185,129,0.07)','var(--border)','❤️', ru ? 'Health Factor — как это работает' : 'Health Factor — how it works', hfBody);
 
-  // ─── 4. PROTOCOLS ───────────────────────────────────────────
+  // ─── 4. ПОЗИЦИИ ───────────────────────────────────────────
   var protoTable = tbl(
-    [ru?'Протокол':'Protocol', 'BTC/WBTC', 'ETH/WETH', 'USDC/stables', ru?'Borrow Factor':'Borrow Factor', ru?'Формула HF':'HF Formula'],
+    [ru?'Протокол':'Protocol', 'BTC', 'ETH', 'USDC', ru?'Особенность':'Key feature'],
     [
-      ['🏦 Aave v3',    '78%', '82.5%', '87%',  '—',    'Σ(val×LT) / debt'],
-      ['🔵 Compound v3','90%', '93%',   '—',    '—',    'Σ(val×LiqCF) / debt'],
-      ['🦋 Morpho Blue','86%', '86%',   '91.5%','—',    'Σ(val×LLTV) / debt'],
-      ['🌀 Euler v2',   '83%', '85%',   '91%',  '0.97', 'Σ(val×CF) / (debt×0.97)'],
+      ['🏦 Aave v3',    '78%', '82.5%', '87%', ru?'Мультиактив, isolation mode':'Multi-asset, isolation mode'],
+      ['🔵 Compound v3','90%', '93%',   '—',   ru?'Только заём USDC':'USDC borrow only'],
+      ['🦋 Morpho Blue','86%', '86%',   '91.5%',ru?'Изолированные маркеты':'Isolated markets'],
+      ['🌀 Euler v2',   '83%', '85%',   '91%', ru?'Borrow Factor 0.97 на волатильные займы':'BorrowFactor 0.97 on volatile borrows'],
     ]
   );
-  var protoBody = ru
-    ? 'Каждый протокол имеет свою формулу расчёта HF и свои пороги ликвидации. Приложение автоматически применяет нужную формулу и пороги при выборе протокола.<br><br>'+
-      protoTable+
-      note('Параметры устанавливаются через governance голосование и могут меняться. Данные актуальны на 2025 год. Всегда проверяй актуальные значения на дашборде протокола.')+
-      '<br><b style="color:var(--text)">🏦 Aave v3</b><br>'+
-      'Мультиактивный пул. Каждый актив имеет свой LT — Liquidation Threshold, который задаётся governance. Займ возможен в любом поддерживаемом активе. HF считается через взвешенную сумму по всем активам залога. При изменении LT актива твои позиции пересчитываются автоматически.<br>'+
-      formula('HF = Σ(val_i × LT_i) / TotalDebt')+
-      tip('Самый гибкий протокол — поддерживает isolation mode для менее ликвидных активов.')+
-      '<br><b style="color:var(--text)">🔵 Compound v3</b><br>'+
-      'Compound v3 (Comet) работает с одним рынком займов — USDC. Каждый актив залога имеет два параметра:<br>'+
-      '• <b>Borrow Collateral Factor (BCF)</b> — максимальный LTV при открытии займа (консервативный)<br>'+
-      '• <b>Liquidation Collateral Factor (LCF)</b> — порог ликвидации (выше BCF, даёт буфер)<br>'+
-      'Приложение использует LCF — именно он определяет HF и риск ликвидации. У Compound нет нативного понятия "HF" — это наш расчётный показатель.<br>'+
-      formula('HF = Σ(val_i × LiqCF_i) / TotalDebt (USDC)')+
-      note('Compound v3 поддерживает только заём USDC. Если ты занимаешь ETH — используй другой протокол.')+
-      '<br><b style="color:var(--text)">🦋 Morpho Blue</b><br>'+
-      'Изолированные маркеты — каждый маркет это пара (залог / займ) с единым LLTV (Liquidation Loan-To-Value), заданным при создании маркета. Нет взаимовлияния между маркетами. Популярные маркеты (LLTV):<br>'+
-      '• WBTC/USDC, cbBTC/USDC: LLTV 86%<br>'+
-      '• WETH/USDC, wstETH/USDC: LLTV 86%<br>'+
-      '• sDAI/USDC, USDT/USDC: LLTV 91.5%<br>'+
-      '• LINK/USDC: LLTV 77%<br>'+
-      formula('HF = Σ(val_i × LLTV_i) / TotalDebt')+
-      tip('В приложении мультиактивный режим трактует каждый актив как отдельный маркет со своим LLTV. Это соответствует стратегии параллельных позиций в разных маркетах.')+
-      '<br><b style="color:var(--text)">🌀 Euler v2</b><br>'+
-      'Модульная архитектура. Каждый vault устанавливает свои LTV-параметры. Уникальность Euler — двусторонние факторы риска:<br>'+
-      '• <b>Collateral Factor (CF)</b> — дисконт на стоимость залога (83–91%)<br>'+
-      '• <b>Borrow Factor (BF)</b> — надбавка на сторону долга (0.97 для волатильных займов, 1.0 для стейблкоинов)<br>'+
-      'Это делает HF у Euler чуть выше при прочих равных — встроенный консерватизм протокола.<br>'+
-      formula('HF = Σ(val_i × CF_i) / (TotalDebt × BorrowFactor_0.97)')+
-      note('Данные по Prime Cluster (curated by Euler Labs). В других кластерах (Escrow, Sandbox) параметры могут отличаться.')
-    : 'Each protocol has its own HF formula and liquidation thresholds. The app automatically applies the correct formula and values when you select a protocol.<br><br>'+
-      protoTable+
-      note('Parameters are set via governance votes and may change. Data current as of 2025. Always verify current values at the protocol dashboard.')+
-      '<br><b style="color:var(--text)">🏦 Aave v3</b><br>'+
-      'Multi-asset pool. Each asset has its own LT — Liquidation Threshold, set by governance. Borrowing is possible in any supported asset. HF is calculated as a weighted sum across all collateral assets. If governance changes an asset\'s LT, your position is automatically recalculated.<br>'+
-      formula('HF = Σ(val_i × LT_i) / TotalDebt')+
-      tip('Most flexible protocol — supports isolation mode for less liquid assets.')+
-      '<br><b style="color:var(--text)">🔵 Compound v3</b><br>'+
-      'Compound v3 (Comet) operates a single borrowing market — USDC. Each collateral asset has two parameters:<br>'+
-      '• <b>Borrow Collateral Factor (BCF)</b> — maximum LTV when opening a loan (conservative)<br>'+
-      '• <b>Liquidation Collateral Factor (LCF)</b> — liquidation threshold (higher than BCF, provides a safety buffer)<br>'+
-      'The app uses LCF — this is what determines HF and liquidation risk. Compound has no native "HF" concept — this is our calculated metric.<br>'+
-      formula('HF = Σ(val_i × LiqCF_i) / TotalDebt (USDC)')+
-      note('Compound v3 supports USDC borrowing only. If you are borrowing ETH — use a different protocol.')+
-      '<br><b style="color:var(--text)">🦋 Morpho Blue</b><br>'+
-      'Isolated markets — each market is a collateral/borrow pair with a fixed LLTV (Liquidation Loan-To-Value) set at creation. No cross-market risk. Popular markets (LLTV):<br>'+
-      '• WBTC/USDC, cbBTC/USDC: LLTV 86%<br>'+
-      '• WETH/USDC, wstETH/USDC: LLTV 86%<br>'+
-      '• sDAI/USDC, USDT/USDC: LLTV 91.5%<br>'+
-      '• LINK/USDC: LLTV 77%<br>'+
-      formula('HF = Σ(val_i × LLTV_i) / TotalDebt')+
-      tip('In multi-asset mode the app treats each asset as a separate market with its own LLTV. This corresponds to a parallel positions strategy across multiple markets.')+
-      '<br><b style="color:var(--text)">🌀 Euler v2</b><br>'+
-      'Modular architecture. Each vault sets its own LTV parameters. Euler\'s key feature — two-sided risk factors:<br>'+
-      '• <b>Collateral Factor (CF)</b> — discount on collateral value (83–91%)<br>'+
-      '• <b>Borrow Factor (BF)</b> — premium on the debt side (0.97 for volatile borrows, 1.0 for stablecoins)<br>'+
-      'This makes Euler\'s HF slightly higher all else being equal — built-in conservatism in the protocol.<br>'+
-      formula('HF = Σ(val_i × CF_i) / (TotalDebt × BorrowFactor_0.97)')+
-      note('Data from Prime Cluster (curated by Euler Labs). Other clusters (Escrow, Sandbox) may have different parameters.');
-  html += s('rgba(124,58,237,0.07)','var(--border)','🏛️', ru ? 'Протоколы — формулы и пороги ликвидации' : 'Protocols — formulas & liquidation thresholds', protoBody);
-
-  // ─── 5. POSITIONS SCREEN ────────────────────────────────────
   var posBody = ru
-    ? '<b style="color:var(--text)">Выбор протокола</b> — Aave / Compound / Euler / Morpho. Переключение меняет пороги ликвидации для всех активов.<br><br>'+
-      '<b style="color:var(--text)">Настройки (⚙️)</b> — добавляй и настраивай активы залога:<br>'+
-      '• Введи <b>количество токенов</b> в поле "Кол-во"<br>'+
-      '• Порог ликвидации заполняется автоматически по протоколу<br>'+
-      '• Можно изменить вручную, если ты работаешь в isolation mode<br><br>'+
-      '<b style="color:var(--text)">Поле Займ ($)</b> — вводи сумму активного долга.<br><br>'+
-      '<b style="color:var(--text)">Три зоны займа</b> — кнопки-подсказки:<br>'+
-      '• <b style="color:var(--green)">HF 2.0</b> — безопасный займ<br>'+
-      '• <b style="color:var(--orange)">HF 1.6</b> — умеренный риск<br>'+
-      '• <b style="color:var(--red)">HF 1.4</b> — высокий риск<br>'+
-      tip('Нажми на любую зону — займ заполнится автоматически для выбранного HF.')+
-      '<b style="color:var(--text)">Мои пулы</b> — отображение LP позиций. Настраиваются в ⚙️ Настройки.<br>'+
-      'Статус диапазона обновляется по живой цене актива.'
-    : '<b style="color:var(--text)">Protocol selector</b> — Aave / Compound / Euler / Morpho. Switching changes liquidation thresholds for all assets.<br><br>'+
-      '<b style="color:var(--text)">Settings (⚙️)</b> — add and configure collateral assets:<br>'+
-      '• Enter <b>token quantity</b> in the "Amount" field<br>'+
-      '• Liquidation threshold is auto-filled per selected protocol<br>'+
-      '• Can be manually adjusted for isolation mode positions<br><br>'+
-      '<b style="color:var(--text)">Loan ($) field</b> — enter your active debt amount.<br><br>'+
-      '<b style="color:var(--text)">Three loan zones</b> — quick-fill buttons:<br>'+
-      '• <b style="color:var(--green)">HF 2.0</b> — safe loan<br>'+
-      '• <b style="color:var(--orange)">HF 1.6</b> — moderate risk<br>'+
-      '• <b style="color:var(--red)">HF 1.4</b> — high risk<br>'+
-      tip('Tap any zone — the loan field fills automatically for the target HF.')+
-      '<b style="color:var(--text)">My Pools</b> — LP position display. Configured in ⚙️ Settings.<br>'+
-      'Range status updates based on live asset price.';
-  html += s('rgba(0,229,255,0.06)','var(--border)','📊', ru ? 'Позиции — управление залогом' : 'Positions — collateral management', posBody);
+    ? '<b style="color:var(--text)">Выбор протокола</b> — кнопки Aave / Compound / Euler / Morpho. При переключении пороги ликвидации пересчитываются автоматически.<br><br>'+
+      protoTable+
+      '<br><b style="color:var(--text)">Настройки (⚙️):</b><br>'+
+      'Здесь вводишь количество токенов залога. Порог ликвидации подставляется сам по выбранному протоколу. Если у тебя isolation mode с нестандартным порогом — можно поправить вручную.<br><br>'+
+      '<b style="color:var(--text)">Поле «Займ»:</b><br>'+
+      'Вводишь сумму долга в долларах. Рядом три кнопки — они автоматически подставляют займ для HF 2.0 / 1.6 / 1.4. Удобно чтобы быстро понять: сколько максимум можно взять безопасно.<br><br>'+
+      '<b style="color:var(--text)">Симулятор падения:</b><br>'+
+      'Ползунок -5% до -70%. Показывает что будет с HF если рынок упадёт на X%. Справа — цена BTC при которой начнётся ликвидация. Это главная цифра — запомни её.<br><br>'+
+      tip('Нажми на HF 2.0 — поле займа заполнится суммой, при которой позиция остаётся безопасной. Полезно для планирования.')
+    : '<b style="color:var(--text)">Protocol selector</b> — buttons for Aave / Compound / Euler / Morpho. Switching recalculates liquidation thresholds automatically.<br><br>'+
+      protoTable+
+      '<br><b style="color:var(--text)">Settings (⚙️):</b><br>'+
+      'This is where you enter token quantities for collateral. The liquidation threshold auto-fills per protocol. If you have an isolation mode position with a custom threshold — you can edit it manually.<br><br>'+
+      '<b style="color:var(--text)">Loan field:</b><br>'+
+      'Enter your debt in dollars. Three buttons next to it auto-fill loan amounts for HF 2.0 / 1.6 / 1.4. Useful to quickly see: what\'s the max I can borrow safely.<br><br>'+
+      '<b style="color:var(--text)">Crash Simulator:</b><br>'+
+      'Slider -5% to -70%. Shows what happens to HF if the market drops X%. On the right — BTC price at which liquidation starts. That\'s the number to remember.<br><br>'+
+      tip('Tap HF 2.0 — the loan field fills with the amount that keeps the position safe. Useful for planning.');
+  html += s('rgba(0,229,255,0.06)','var(--border)','📊', ru ? 'Позиции — залог, займ и симулятор' : 'Positions — collateral, loan & simulator', posBody);
 
-  // ─── 6. JOURNAL ─────────────────────────────────────────────
+  // ─── 5. КОШЕЛЁК ──────────────────────────────────────────
+  var walletBody = ru
+    ? 'Вместо ручного ввода — вставляешь адрес кошелька, нажимаешь «Загрузить», всё остальное делает приложение. Никаких ключей, никаких транзакций. Только чтение публичных данных.<br><br>'+
+      '<b style="color:var(--text)">Что загружается сейчас:</b><br>'+
+      '• 🏦 <b>Aave v3</b> — залог, займ, HF по Ethereum Mainnet через The Graph<br>'+
+      '• ⭐ <b>Merkl</b> — накопленные награды по 6 сетям (ETH, Arbitrum, Base, Optimism, Polygon, Avalanche)<br>'+
+      '• 🦄 <b>Uniswap v3</b> — LP позиции и диапазоны через Uniswap API<br>'+
+      '• 🦋 <b>Morpho Blue</b> — позиции через Morpho API<br>'+
+      '• 🌐 <b>EVM баланс</b> — нативные токены и ERC-20 через Covalent / Alchemy<br><br>'+
+      '<b style="color:var(--text)">Книга кошельков:</b><br>'+
+      'Сохраняй несколько адресов. Переключаться между ними — один тап. Под каждым кошельком показывается P&L за весь период наблюдения.<br><br>'+
+      '<b style="color:var(--text)">Снапшоты:</b><br>'+
+      'При каждой успешной загрузке кошелька приложение записывает снапшот: дата, стоимость портфеля, залог, займ, HF. В Журнале → История портфеля — видишь как менялась стоимость со временем.<br><br>'+
+      note('Журнал пополнений и снятий остаётся ручным. Блокчейн не может отличить \"реинвест\" от \"новый депозит\" — только ты знаешь это.')
+    : 'Instead of manual entry — paste a wallet address, tap Load, and the app handles the rest. No keys, no transactions. Read-only public data.<br><br>'+
+      '<b style="color:var(--text)">What loads now:</b><br>'+
+      '• 🏦 <b>Aave v3</b> — collateral, loan, HF on Ethereum Mainnet via The Graph<br>'+
+      '• ⭐ <b>Merkl</b> — accumulated rewards across 6 networks (ETH, Arbitrum, Base, Optimism, Polygon, Avalanche)<br>'+
+      '• 🦄 <b>Uniswap v3</b> — LP positions and ranges via Uniswap API<br>'+
+      '• 🦋 <b>Morpho Blue</b> — positions via Morpho API<br>'+
+      '• 🌐 <b>EVM balance</b> — native tokens and ERC-20 via Covalent / Alchemy<br><br>'+
+      '<b style="color:var(--text)">Wallet book:</b><br>'+
+      'Save multiple addresses. Switch between them with one tap. Under each wallet — P&L for the full observation period.<br><br>'+
+      '<b style="color:var(--text)">Snapshots:</b><br>'+
+      'Each successful wallet load saves a snapshot: date, portfolio value, collateral, loan, HF. In Journal → Portfolio History you see how value changed over time.<br><br>'+
+      note('The deposits and withdrawals journal stays manual. The blockchain can\'t tell "reinvested income" from "new deposit" — only you know that.');
+  html += s('rgba(0,229,255,0.07)','rgba(0,229,255,0.25)','🔗', ru ? 'Кошелёк — авто-загрузка позиций' : 'Wallet — auto-load positions', walletBody);
+
+  // ─── 6. ЖУРНАЛ ────────────────────────────────────────────
   var jrnBody = ru
-    ? '<b style="color:var(--text)">Журнал</b> — полная история всех операций с капиталом.<br><br>'+
-      '<b style="color:var(--text)">Типы записей:</b><br>'+
-      '• 💰 <b>Пополнение</b> — добавление средств в протокол/пул<br>'+
-      '• 📤 <b>Снятие</b> — вывод средств<br>'+
-      '• 📈 <b>Доход с пула</b> — заработанные комиссии<br>'+
-      '• 🎁 <b>Награды</b> — rebase, стейкинг, rewards<br>'+
-      '• 💸 <b>Комиссия/газ</b> — расходы на транзакции<br><br>'+
-      '<b style="color:var(--text)">P&L График</b> — кривая накопленной прибыли. Строится по всем записям типа "Доход" в хронологическом порядке.<br><br>'+
-      '<b style="color:var(--text)">Годовая статистика:</b><br>'+
-      '• Всего внёс — сумма всех пополнений<br>'+
-      '• Заработано — доходы с пулов + награды<br>'+
-      '• Снято — выводы<br>'+
-      '• Чистая прибыль = Заработано − Комиссии'
-    : '<b style="color:var(--text)">Journal</b> — complete history of all capital operations.<br><br>'+
-      '<b style="color:var(--text)">Entry types:</b><br>'+
-      '• 💰 <b>Deposit</b> — adding funds to a protocol/pool<br>'+
-      '• 📤 <b>Withdrawal</b> — withdrawing funds<br>'+
-      '• 📈 <b>Pool Income</b> — earned fees<br>'+
-      '• 🎁 <b>Rewards</b> — rebase, staking, yield rewards<br>'+
-      '• 💸 <b>Fee/Gas</b> — transaction costs<br><br>'+
-      '<b style="color:var(--text)">P&L Chart</b> — accumulated profit curve. Built from all "Income" entries in chronological order.<br><br>'+
-      '<b style="color:var(--text)">Annual stats:</b><br>'+
-      '• Total Deposited — sum of all deposits<br>'+
-      '• Total Earned — pool income + rewards<br>'+
-      '• Withdrawn — withdrawals<br>'+
-      '• Net Profit = Earned − Fees';
-  html += s('rgba(16,185,129,0.07)','var(--border)','📓', ru ? 'Журнал — история операций' : 'Journal — transaction history', jrnBody);
+    ? 'Журнал — это просто список всего что ты делал с капиталом. Завёл деньги — записал. Снял комиссии — записал. Заплатил газ — записал. Потом смотришь сводку за месяц и за год.<br><br>'+
+      '<b style="color:var(--text)">Пять типов записей:</b><br>'+
+      '• 💰 <b>Пополнение</b> — внёс деньги в протокол или пул<br>'+
+      '• 📤 <b>Снятие</b> — вывел средства<br>'+
+      '• 📈 <b>Доход с пула</b> — забрал накопленные комиссии<br>'+
+      '• 🎁 <b>Награды</b> — токены от Merkl, rebase, staking rewards<br>'+
+      '• 💸 <b>Газ/Комиссия</b> — потратил на транзакции<br><br>'+
+      '<b style="color:var(--text)">P&L график</b> — кривая накопленной прибыли. Строится автоматически по записям типа Доход и Комиссии. Смотришь — сразу видно растёт P&L или стоит на месте.<br><br>'+
+      '<b style="color:var(--text)">История портфеля</b> — раздел ниже P&L графика. Берёт данные из снапшотов кошелька и рисует отдельный график: как менялась стоимость портфеля в $. Показывает дельту за весь период наблюдения — сколько заработал или потерял.<br><br>'+
+      tip('Листай по месяцам стрелками ← → чтобы видеть статистику за конкретный период.')
+    : 'The journal is just a list of everything you did with capital. Deposited — noted. Collected fees — noted. Paid gas — noted. Then you look at the monthly and annual summary.<br><br>'+
+      '<b style="color:var(--text)">Five entry types:</b><br>'+
+      '• 💰 <b>Deposit</b> — added funds to a protocol or pool<br>'+
+      '• 📤 <b>Withdrawal</b> — withdrew funds<br>'+
+      '• 📈 <b>Pool Income</b> — collected accumulated fees<br>'+
+      '• 🎁 <b>Rewards</b> — tokens from Merkl, rebase, staking rewards<br>'+
+      '• 💸 <b>Gas/Fee</b> — spent on transactions<br><br>'+
+      '<b style="color:var(--text)">P&L chart</b> — accumulated profit curve. Built automatically from Income and Fee entries. One look and you can see: is P&L growing or flat.<br><br>'+
+      '<b style="color:var(--text)">Portfolio History</b> — section below the P&L chart. Pulls data from wallet snapshots and draws a separate chart: how portfolio value in $ changed over time. Shows the delta for the full observation period — how much you gained or lost.<br><br>'+
+      tip('Use the ← → arrows to browse by month and see stats for specific periods.');
+  html += s('rgba(16,185,129,0.07)','var(--border)','📓', ru ? 'Журнал — записи и история портфеля' : 'Journal — entries & portfolio history', jrnBody);
 
-  // ─── 7. STRATEGY: LOAN TAB ──────────────────────────────────
+  // ─── 7. СТРАТЕГИЯ ─────────────────────────────────────────
   var stratBody = ru
-    ? '<b style="color:var(--text)">Вкладка «Займ»</b> — анализ прибыльности текущей стратегии.<br><br>'+
-      '<b style="color:var(--text)">Вердикт стратегии:</b><br>'+
-      '• ✅ Прибыльная — доход с пулов покрывает стоимость долга<br>'+
-      '• ❌ Убыточная — вы платите больше процентов, чем зарабатываете<br><br>'+
-      '<b style="color:var(--text)">Точка безубыточности:</b><br>'+
-      '• Доход/мес — суммарный заработок пулов<br>'+
-      '• Стоимость долга/мес = займ × ставка% ÷ 12<br>'+
-      '• Чистая прибыль = Доход − Стоимость долга<br><br>'+
-      formula('Ставка займа % — вводи актуальную ставку из протокола (field «Ставка займа»)')+
-      '<b style="color:var(--text)">Симулятор падения</b> — ползунок от −5% до −70%:<br>'+
-      '• Залог после — стоимость залога при указанном падении<br>'+
-      '• HF — Health Factor после падения<br>'+
-      '• До ликвидации — сколько $ отделяет от HF = 1.0<br>'+
-      '• BTC при ликвидации — цена BTC при которой начнётся ликвидация<br>'+
-      note(ru?'Симулятор показывает сценарий пропорционального падения ВСЕХ активов залога.':'Simulator shows proportional drop of ALL collateral assets.')+
-      '<b style="color:var(--text)">Ребаланс</b> — отображается когда доля актива значительно отклонилась от целевой.'
-    : '<b style="color:var(--text)">Loan tab</b> — profitability analysis of your current strategy.<br><br>'+
-      '<b style="color:var(--text)">Strategy verdict:</b><br>'+
-      '• ✅ Profitable — pool income covers debt cost<br>'+
-      '• ❌ Unprofitable — you pay more interest than you earn<br><br>'+
-      '<b style="color:var(--text)">Break-even analysis:</b><br>'+
-      '• Income/mo — total pool earnings<br>'+
-      '• Debt cost/mo = loan × rate% ÷ 12<br>'+
-      '• Net profit = Income − Debt cost<br><br>'+
-      formula('Borrow rate % — enter the current rate from your protocol (Borrow rate field)')+
-      '<b style="color:var(--text)">Crash Simulator</b> — slider from −5% to −70%:<br>'+
-      '• Collateral after — collateral value at specified drop<br>'+
-      '• HF — Health Factor after the drop<br>'+
-      '• To liquidation — $ distance from HF = 1.0<br>'+
-      '• BTC at liquidation — BTC price at which liquidation begins<br>'+
-      note('Simulator shows proportional drop of ALL collateral assets.')+
-      '<b style="color:var(--text)">Rebalance</b> — appears when an asset share has drifted significantly from target.';
-  html += s('rgba(124,58,237,0.07)','var(--border)','⚡', ru ? 'Стратегия — анализ займа' : 'Strategy — loan analysis', stratBody);
+    ? '<b style="color:var(--text)">Вкладка «Займ»</b><br>'+
+      'Отвечает на главный вопрос: стратегия сейчас зарабатывает или ты в минус? Считает доход пулов минус стоимость займа. Если чистая прибыль положительная — стратегия работает.<br><br>'+
+      '<b style="color:var(--text)">Что вводить:</b><br>'+
+      '• Ставку займа — возьми актуальную с дашборда протокола, она меняется каждый блок<br>'+
+      '• Займ уже должен быть введён в разделе Позиции<br><br>'+
+      '<b style="color:var(--text)">Симулятор падения:</b><br>'+
+      'Тянешь ползунок — видишь что будет с HF. Главное число справа — цена BTC при ликвидации. Если эта цена близко к текущей — позиция в опасности.<br><br>'+
+      '<b style="color:var(--text)">Ребаланс:</b><br>'+
+      'Появляется когда доля актива сильно отклонилась от целевой. Показывает что и в какую сторону надо двигать.<br><br>'+
+      '<b style="color:var(--text)">Вкладка «LP Симулятор»:</b><br>'+
+      'Uniswap v3 калькулятор — считает честный P&L с учётом impermanent loss. Вводишь диапазон, APR, сумму, цену выхода. Получаешь: сколько заработаешь на комиссиях, сколько потеряешь на IL, когда выйдешь в плюс.<br><br>'+
+      tip('Тяни жёлтую линию вверх-вниз на графике — это цена выхода. Видишь P&L при разных сценариях.')
+    : '<b style="color:var(--text)">Loan tab</b><br>'+
+      'Answers the main question: is the strategy making money right now or are you in the red? Calculates pool income minus debt cost. If net profit is positive — the strategy is working.<br><br>'+
+      '<b style="color:var(--text)">What to enter:</b><br>'+
+      '• Borrow rate — get the current rate from the protocol dashboard, it changes every block<br>'+
+      '• Loan should already be entered in the Positions screen<br><br>'+
+      '<b style="color:var(--text)">Crash Simulator:</b><br>'+
+      'Drag the slider — see what happens to HF. The key number on the right is BTC price at liquidation. If that price is close to current — the position is in danger.<br><br>'+
+      '<b style="color:var(--text)">Rebalance:</b><br>'+
+      'Appears when an asset share has drifted significantly from target. Shows what to move and which direction.<br><br>'+
+      '<b style="color:var(--text)">LP Simulator tab:</b><br>'+
+      'Uniswap v3 calculator — gives you honest P&L accounting for impermanent loss. Enter range, APR, size, exit price. You get: fees earned, IL lost, when you break even.<br><br>'+
+      tip('Drag the yellow line up or down on the chart — that\'s the exit price. See P&L under different scenarios.');
+  html += s('rgba(124,58,237,0.07)','var(--border)','⚡', ru ? 'Стратегия — анализ и LP симулятор' : 'Strategy — analysis & LP simulator', stratBody);
 
-  // ─── 8. LP SIMULATOR ────────────────────────────────────────
-  var lpBody = ru
-    ? '<b style="color:var(--text)">LP Симулятор</b> — Uniswap v3 калькулятор P&L для концентрированной ликвидности.<br><br>'+
-      '<b style="color:var(--text)">Параметры позиции:</b><br>'+
-      '• <b>Актив / Пара</b> — токены пула (ETH/USDC, BTC/USDC и т.д.)<br>'+
-      '• <b>Комиссия пула</b> — 0.01% / 0.05% / 0.3% / 1% (выбери как в Uniswap)<br>'+
-      '• <b>Сумма $</b> — размер позиции в долларах<br>'+
-      '• <b>APR %</b> — ожидаемый APR (возьми с app.uniswap.org или dexscreener)<br>'+
-      '• <b>Нижняя / Текущая / Верхняя</b> — ценовой диапазон позиции<br><br>'+
-      '<b style="color:var(--text)">График P&L:</b><br>'+
-      '• Зелёная линия — кривая прибыли по времени<br>'+
-      '• Жёлтая линия — цена выхода (тяни пальцем вверх/вниз)<br>'+
-      '• Оранжевая точка — точка безубыточности по времени<br>'+
-      tip(ru?'Нажми ⛶ чтобы развернуть график на весь экран. При повороте телефона — landscape режим.':'Tap ⛶ to expand chart to full screen. Works in landscape mode on rotation.')+
-      '<b style="color:var(--text)">Результаты:</b><br>'+
-      formula('P&L = Fees − IL (Impermanent Loss)')+
-      '• <b>Fees</b> — заработанные комиссии за период<br>'+
-      '• <b>IL</b> — непостоянные потери (Uniswap v3 формула)<br>'+
-      '• <b>При выходе</b> — состав позиции в токенах при цене выхода<br>'+
-      '• <b>Безубыток</b> — сколько дней нужно чтобы комиссии покрыли IL<br><br>'+
-      '<b style="color:var(--text)">Сравнение с HODL:</b><br>'+
-      '• Синяя пунктирная линия на графике — сколько ты заработал бы просто держа токены<br>'+
-      '• Тултип при наведении показывает: <b>P&L</b> позиции, <b>Fee</b>, <b>IL</b> и метку <b>HODL</b> — время когда LP начинает обгонять простой холд<br>'+
-      '• Оранжевая метка <b>вход</b> — точка открытия позиции на графике<br>'+
-      '• Фиолетовая точка — момент когда LP = HODL<br><br>'+
-      note(ru?'APR влияет только на скорость накопления комиссий. IL зависит только от движения цены и диапазона.':'APR affects only the fee accrual speed. IL depends only on price movement and range.')+
-      '<b style="color:var(--text)">IL формула (Uniswap v3, точная):</b><br>'+
-      formula('IL = holdValue − lpValue, где позиция пересчитывается по exit price и границам диапазона')
-    : '<b style="color:var(--text)">LP Simulator</b> — Uniswap v3 P&L calculator for concentrated liquidity.<br><br>'+
-      '<b style="color:var(--text)">Position parameters:</b><br>'+
-      '• <b>Asset / Pair</b> — pool tokens (ETH/USDC, BTC/USDC, etc.)<br>'+
-      '• <b>Pool fee</b> — 0.01% / 0.05% / 0.3% / 1% (match Uniswap fee tier)<br>'+
-      '• <b>Size $</b> — position size in dollars<br>'+
-      '• <b>APR %</b> — expected APR (get it from app.uniswap.org or dexscreener)<br>'+
-      '• <b>Lower / Current / Upper</b> — price range of the position<br><br>'+
-      '<b style="color:var(--text)">P&L Chart:</b><br>'+
-      '• Green line — profit curve over time<br>'+
-      '• Yellow line — exit price (drag up/down with finger)<br>'+
-      '• Orange dot — break-even point in time<br>'+
-      tip('Tap ⛶ to expand chart to full screen. Works in landscape mode on rotation.')+
-      '<b style="color:var(--text)">Results:</b><br>'+
-      formula('P&L = Fees − IL (Impermanent Loss)')+
-      '• <b>Fees</b> — earned fees for the period<br>'+
-      '• <b>IL</b> — impermanent loss (Uniswap v3 exact formula)<br>'+
-      '• <b>At exit</b> — position composition at exit price<br>'+
-      '• <b>Break-even</b> — days needed for fees to cover IL<br><br>'+
-      '<b style="color:var(--text)">HODL comparison:</b><br>'+
-      '• Blue dashed line on the chart — how much you would have earned just holding the tokens<br>'+
-      '• Tooltip on hover shows: position <b>P&L</b>, <b>Fee</b>, <b>IL</b> and <b>HODL</b> label — when LP starts outperforming simple hold<br>'+
-      '• Orange label <b>entry</b> — position opening point on the chart<br>'+
-      '• Purple dot — the moment when LP = HODL<br><br>'+
-      note('APR affects only fee accrual speed. IL depends only on price movement and range.')+
-      '<b style="color:var(--text)">IL formula (Uniswap v3, exact):</b><br>'+
-      formula('IL = holdValue − lpValue, where position is recalculated at exit price and range bounds');
-  html += s('rgba(255,0,122,0.06)','var(--border)','🦄', ru ? 'LP Симулятор — Uniswap v3 P&L' : 'LP Simulator — Uniswap v3 P&L', lpBody);
-
-  // ─── 9. TELEGRAM ALERTS ─────────────────────────────────────
+  // ─── 8. TELEGRAM ──────────────────────────────────────────
   var tgBody = ru
     ? '<b style="color:var(--text)">Как подключить:</b><br>'+
-      '1. Найди бота <b style="color:var(--accent)">@DefiAnalytics2bot</b> в Telegram<br>'+
-      '2. Нажми <b>/start</b><br>'+
-      '3. Введи @username → нажми «Подключить»<br><br>'+
+      '1. Найди <b style="color:var(--accent)">@DefiAnalytics2bot</b> в Telegram<br>'+
+      '2. Нажми /start<br>'+
+      '3. Введи свой @username в приложении → нажми «Подключить»<br>'+
+      '4. Проверь тест-уведомление<br><br>'+
       '<b style="color:var(--text)">Три типа алертов:</b><br>'+
-      '• ❤️ <b>Health Factor</b> — уведомление когда HF падает ниже заданного порога (1.1–3.0). Режим: один раз или при каждом обновлении цены<br>'+
-      '• 📍 <b>Выход из диапазона</b> — уведомление когда цена актива выходит за границы LP позиции<br>'+
-      '• 🎯 <b>Цена актива</b> — уведомление при пробое уровня вверх, вниз или в любую сторону<br><br>'+
-      tip('Алерты проверяются автоматически при каждом обновлении цен (~1 мин). Сервер: defi-alerts-server.onrender.com')+
-      note(ru?'Сервер на Render.com может засыпать после 15 мин простоя. Первый алерт после паузы может задержаться на 30–60 сек.':'Server on Render.com may sleep after 15 min of inactivity. First alert after pause may be delayed 30–60 sec.')
+      '• ❤️ <b>Health Factor</b> — пишет когда HF падает ниже твоего порога. Настрой порог 1.5 — будет предупреждение до ситуации когда уже поздно<br>'+
+      '• ⏱ <b>Прогноз HF</b> — считает по динамике цены залога через сколько часов HF достигнет 1.1. Алерт приходит заранее — пока ещё можно действовать<br>'+
+      '• 📍 <b>Выход из диапазона</b> — уведомляет когда цена актива вышла за границы Uniswap позиции. Комиссии перестали начисляться.<br>'+
+      '• 🎯 <b>Цена актива</b> — пробой заданного уровня вверх, вниз или в любую сторону<br><br>'+
+      note('Сервер на Render.com засыпает через 15 мин простоя. Первый алерт после паузы может опоздать на минуту — это нормально.')
     : '<b style="color:var(--text)">How to connect:</b><br>'+
       '1. Find <b style="color:var(--accent)">@DefiAnalytics2bot</b> in Telegram<br>'+
-      '2. Send <b>/start</b><br>'+
-      '3. Enter @username → tap "Connect"<br><br>'+
-      '<b style="color:var(--text)">Three alert types:</b><br>'+
-      '• ❤️ <b>Health Factor</b> — notification when HF drops below a set threshold (1.1–3.0). Mode: once or on every price update<br>'+
-      '• 📍 <b>Out of range</b> — notification when asset price exits LP position bounds<br>'+
-      '• 🎯 <b>Asset price</b> — notification on level breakout up, down, or either direction<br><br>'+
-      tip('Alerts are checked automatically on every price update (~1 min). Server: defi-alerts-server.onrender.com')+
-      note('Server on Render.com may sleep after 15 min of inactivity. First alert after pause may be delayed 30–60 sec.');
+      '2. Send /start<br>'+
+      '3. Enter your @username in the app → tap Connect<br>'+
+      '4. Check the test notification<br><br>'+
+      '<b style="color:var(--text)">Four alert types:</b><br>'+
+      '• ❤️ <b>Health Factor</b> — notifies when HF drops below your threshold. Set 1.5 — gives warning before it\'s too late<br>'+
+      '• ⏱ <b>HF Forecast</b> — calculates from collateral price dynamics how many hours until HF reaches 1.1. Alert arrives early — while you can still act<br>'+
+      '• 📍 <b>Out of range</b> — notifies when asset price exits Uniswap position bounds. Fees stopped accruing.<br>'+
+      '• 🎯 <b>Asset price</b> — breakout of a set level up, down, or either direction<br><br>'+
+      note('Server on Render.com sleeps after 15 min of inactivity. First alert after a pause may be a minute late — that\'s normal.');
   html += s('rgba(0,136,204,0.07)','rgba(0,136,204,0.3)','🔔', ru ? 'Telegram алерты' : 'Telegram Alerts', tgBody);
 
-  // ─── 10. SAFETY CHECKLIST ───────────────────────────────────
+  // ─── 9. ЧЕКЛИСТ ───────────────────────────────────────────
   var checks = ru ? [
-    'HF всегда ≥ 2.0 — оставляй запас для волатильности',
-    'Займ не превышает 65–70% от max LTV протокола',
-    '30–40% портфеля — стейблы, работающие в пулах',
-    'Доход пулов > стоимость займа (стратегия прибыльная)',
-    'LP диапазоны актуальны — следишь за выходом из диапазона',
-    'Ведёшь журнал каждого пополнения, дохода, снятия',
-    'Telegram алерт на HF настроен',
-    'Есть резерв стейблов для пополнения залога при проливе',
-    'Знаешь цену ликвидации BTC/ETH своей позиции'
+    'HF держишь выше 2.0 — минимальный комфортный буфер',
+    'Займ не превышает 60–65% от максимального LTV протокола',
+    'Знаешь цену BTC/ETH при которой начнётся ликвидация',
+    'Доход пулов покрывает стоимость займа — стратегия в плюс',
+    'Telegram алерт на HF настроен и проверен тест-уведомлением',
+    'LP диапазоны периодически проверяешь — цена не вышла за границы',
+    'В журнале фиксируешь каждый вывод дохода и пополнение',
+    'Есть резерв стейблов — если рынок падает, можно докинуть залог',
+    'Ставку займа обновляешь в настройках — она меняется'
   ] : [
-    'HF always ≥ 2.0 — keep buffer for volatility',
-    'Loan does not exceed 65–70% of protocol max LTV',
-    '30–40% of portfolio — stablecoins working in pools',
-    'Pool income > debt cost (strategy is profitable)',
-    'LP ranges are current — monitoring for out-of-range',
-    'Logging every deposit, income, withdrawal in Journal',
-    'Telegram HF alert is configured',
-    'Have stable reserve to top up collateral during a dip',
-    'Know the BTC/ETH liquidation price of your position'
+    'Keep HF above 2.0 — minimum comfortable buffer',
+    'Loan doesn\'t exceed 60–65% of max protocol LTV',
+    'Know the BTC/ETH price at which liquidation starts',
+    'Pool income covers debt cost — strategy is profitable',
+    'Telegram HF alert is configured and tested',
+    'Check LP ranges periodically — price hasn\'t exited bounds',
+    'Log every income withdrawal and deposit in the journal',
+    'Have a stablecoin reserve — if market drops, can top up collateral',
+    'Update borrow rate in settings — it changes over time'
   ];
   var checkHtml = '<div style="display:flex;flex-direction:column;gap:8px">'+
     checks.map(function(c){
@@ -4713,118 +4554,44 @@ function renderDocsScreen(){
   html += '<div style="background:var(--surface);border:1px solid rgba(16,185,129,0.3);border-radius:18px;overflow:hidden;margin-bottom:2px">'+
     '<div style="padding:14px 16px;background:rgba(16,185,129,0.08);border-bottom:1px solid rgba(16,185,129,0.2);display:flex;align-items:center;gap:10px">'+
       '<span style="font-size:18px">✅</span>'+
-      '<span style="font-size:14px;font-weight:700">'+(ru ? 'Чеклист безопасной работы' : 'Safety Checklist')+'</span>'+
+      '<span style="font-size:14px;font-weight:700">'+(ru ? 'Чеклист — что проверять регулярно' : 'Checklist — what to review regularly')+'</span>'+
     '</div>'+
     '<div style="padding:14px 16px">'+checkHtml+'</div>'+
   '</div>';
 
-
-  // ─── 10b. WALLET CONNECT — DOCS ────────────────────────────
-  var walletDocBody = ru
-    ? '<b style="color:var(--text)">Зачем подключать кошелёк?</b><br>'+
-      'Чтобы не вводить данные вручную. Введи публичный адрес — приложение само найдёт позиции через публичные API блокчейнов. Это <b>watch-only</b> режим: никакого доступа к приватным ключам, никаких транзакций, только чтение данных.<br><br>'+
-      '<b style="color:var(--text)">Что загружается автоматически:</b><br>'+
-      '• <b style="color:var(--orange)">🏦 Aave v3</b> — залог, займ, Health Factor (Ethereum, Avalanche, Arbitrum, Base, Optimism, Polygon)<br>'+
-      '• <b style="color:var(--accent)">⭐ Merkl</b> — накопленные награды по 6 сетям<br>'+
-      '• <b style="color:#FF007A">🦄 Uniswap v3</b> — LP позиции и диапазоны<br>'+
-      '• <b style="color:var(--muted2)">🔵 Compound v3</b> — позиции на Ethereum<br>'+
-      '• <b style="color:var(--accent)">🦋 Morpho Blue</b> — залог и займ (Ethereum, Base)<br>'+
-      '• <b style="color:var(--green)">🟢 GMX GLV</b> — баланс пулов (Arbitrum, Avalanche)<br>'+
-      '• <b style="color:#9945FF">🟣 Solana</b> — нативный баланс + SPL токены<br><br>'+
-      '<b style="color:var(--text)">Источники данных:</b><br>'+
-      formula('EVM: Ankr API → мультичейн балансы + aToken позиции')+
-      formula('Solana: Helius API → SOL баланс + SPL токены')+
-      formula('DeFi позиции: DefiLlama + протокольные GraphQL API')+
-      formula('Резерв EVM: Blockscout (если Ankr недоступен)')+
-      '<br>'+
-      note('Приложение читает только публичные on-chain данные. Приватный ключ никогда не запрашивается и не нужен.')+
-      '<b style="color:var(--text)">Как работает загрузка:</b><br>'+
-      '1. Введи EVM-адрес (0x...) или Solana-адрес в поле на главной странице<br>'+
-      '2. Нажми «Загрузить»<br>'+
-      '3. Приложение параллельно опрашивает Ankr, Helius, DefiLlama и GraphQL протоколов<br>'+
-      '4. Позиции заполняются автоматически — проверь и нажми «Сохранить» на экране Позиции<br><br>'+
-      '<b style="color:var(--text)">Журнал:</b><br>'+
-      'Журнал остаётся ручным — это точнее. Блокчейн показывает только transfers, но не может отличить «реинвест дохода» от «пополнение новыми деньгами». Merkl-награды можно фиксировать как «Награды» в журнале вручную.'
-    : '<b style="color:var(--text)">Why connect a wallet?</b><br>'+
-      'To avoid manual data entry. Enter your public address — the app finds your positions via public blockchain APIs. This is <b>watch-only</b> mode: no private key access, no transactions, read-only.<br><br>'+
-      '<b style="color:var(--text)">What loads automatically:</b><br>'+
-      '• <b style="color:var(--orange)">🏦 Aave v3</b> — collateral, loan, Health Factor (Ethereum, Avalanche, Arbitrum, Base, Optimism, Polygon)<br>'+
-      '• <b style="color:var(--accent)">⭐ Merkl</b> — accumulated rewards across 6 networks<br>'+
-      '• <b style="color:#FF007A">🦄 Uniswap v3</b> — LP positions and price ranges<br>'+
-      '• <b style="color:var(--muted2)">🔵 Compound v3</b> — positions on Ethereum<br>'+
-      '• <b style="color:var(--accent)">🦋 Morpho Blue</b> — collateral and debt (Ethereum, Base)<br>'+
-      '• <b style="color:var(--green)">🟢 GMX GLV</b> — pool balances (Arbitrum, Avalanche)<br>'+
-      '• <b style="color:#9945FF">🟣 Solana</b> — native balance + SPL tokens<br><br>'+
-      '<b style="color:var(--text)">Data sources:</b><br>'+
-      formula('EVM: Ankr API → multichain balances + aToken positions')+
-      formula('Solana: Helius API → SOL balance + SPL tokens')+
-      formula('DeFi positions: DefiLlama + protocol GraphQL APIs')+
-      formula('EVM fallback: Blockscout (if Ankr unavailable)')+
-      '<br>'+
-      note('The app only reads public on-chain data. Your private key is never requested or needed.')+
-      '<b style="color:var(--text)">How it works:</b><br>'+
-      '1. Enter an EVM address (0x...) or Solana address in the field on the Home screen<br>'+
-      '2. Tap «Load»<br>'+
-      '3. The app queries Ankr, Helius, DefiLlama and protocol GraphQL APIs in parallel<br>'+
-      '4. Positions fill automatically — review and tap «Save» on the Positions screen<br><br>'+
-      '<b style="color:var(--text)">Journal:</b><br>'+
-      'The journal stays manual — it is more accurate. The blockchain shows only transfers, but cannot distinguish between "reinvesting income" and "adding new capital". Merkl rewards can be recorded as «Rewards» entries manually.';
-  html += s('rgba(0,229,255,0.06)','rgba(0,229,255,0.25)','🔗', ru ? 'Подключение кошелька — авто-загрузка позиций' : 'Wallet Connect — auto-load positions', walletDocBody);
-  // ─── 11. DONATE / ABOUT ─────────────────────────────────────
+  // ─── 10. ОБ АВТОРЕ ────────────────────────────────────────
   var donateBody = ru
     ? '<div style="text-align:center;margin-bottom:14px">'+
         '<div style="font-size:28px;margin-bottom:8px">👋</div>'+
-        '<div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:8px">Юрий Лосев — практикующий DeFi инвестор</div>'+
+        '<div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px">Юрий Лосев</div>'+
+        '<div style="font-size:12px;color:var(--muted2)">Практикующий DeFi трейдер, Тбилиси</div>'+
       '</div>'+
-      'Я сделал это приложение для себя. Работаю с Aave, Uniswap, GMX и опционными стратегиями каждый день — не в теории, а с реальными позициями.<br><br>'+
-      'Устал считать HF в таблицах и следить за диапазонами вручную. Написал инструмент, который делает это за меня — теперь делюсь бесплатно.<br><br>'+
+      'Работаю с Aave, Uniswap, GMX и опционами каждый день. Это приложение написал для себя — раньше держал всё в таблицах, потом надоело.<br><br>'+
+      'Сейчас открываю его с телефона перед сном — смотрю HF, проверяю LP диапазоны, записываю что заработал. Занимает полминуты.<br><br>'+
       '<div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin:10px 0">'+
-        '<div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:8px">Если ты опытный трейдер:</div>'+
-        '<div style="font-size:12px;color:var(--muted2);line-height:1.7">Заметил ошибку в расчётах? Формула считается неверно? Параметры протокола устарели? <b style="color:var(--accent)">Напиши мне</b> — исправлю как можно быстрее. Это важно.</div>'+
-      '</div>'+
-      '<div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin:10px 0">'+
-        '<div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:8px">Если ты новичок:</div>'+
-        '<div style="font-size:12px;color:var(--muted2);line-height:1.7">Что-то непонятно в интерфейсе? Не хватает объяснений? Какая функция работает неудобно? <b style="color:var(--accent)">Напиши</b> — ваши вопросы помогают делать приложение лучше.</div>'+
+        '<div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:6px">Нашёл ошибку?</div>'+
+        '<div style="font-size:12px;color:var(--muted2);line-height:1.7">Если расчёт HF не сходится с протоколом, параметры устарели или что-то работает не так — напиши. Исправлю быстро, это важно для всех кто использует приложение с реальными позициями.</div>'+
       '</div>'+
       '<div style="background:var(--surface2);border:1px solid rgba(16,185,129,0.3);border-radius:12px;padding:12px 14px;margin:10px 0">'+
-        '<div style="font-size:12px;font-weight:700;color:var(--green);margin-bottom:8px">Помогло избежать ликвидацию или сэкономило время?</div>'+
-        '<div style="font-size:12px;color:var(--muted2);line-height:1.7">Лучший способ поддержать разработку — донат. Любая сумма. Это мотивирует добавлять новые функции и поддерживать актуальность данных.</div>'+
-      '</div>'+
-      '<div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin:10px 0">'+
-        '<div style="font-size:11px;font-family:\'Space Mono\',monospace;color:var(--muted2);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">USDC / ETH / EVM</div>'+
-        '<div style="font-size:11px;font-family:\'Space Mono\',monospace;color:var(--accent);word-break:break-all;margin-bottom:10px">0x834Be694A9c514051e6c74D46e5b5937bb1e69FA</div>'+
-        '<button onclick="navigator.clipboard.writeText(\'0x834Be694A9c514051e6c74D46e5b5937bb1e69FA\');var ok=lang===\'ru\'?\'✅ Скопировано!\':\'✅ Copied!\';this.textContent=ok;var s=this;setTimeout(function(){s.textContent=lang===\'ru\'?\'📋 Скопировать адрес\':\'📋 Copy address\';},2000)" '+
-          'style="width:100%;padding:10px;background:rgba(0,229,255,0.08);border:1px solid rgba(0,229,255,0.25);border-radius:8px;color:var(--accent);font-family:\'Syne\',sans-serif;font-size:13px;font-weight:700;cursor:pointer;touch-action:manipulation">'+
-          '"+(lang===\'ru\'?\'📋 Скопировать адрес\':\'📋 Copy address\')+"'+
-        '</button>'+
+        '<div style="font-size:12px;font-weight:700;color:var(--green);margin-bottom:6px">Помогло — скинь пару баксов</div>'+
+        '<div style="font-size:12px;color:var(--muted2);line-height:1.7">Приложение бесплатное и без рекламы. Если сэкономило время или помогло избежать ликвидацию — донат мотивирует продолжать развивать.</div>'+
       '</div>'
     : '<div style="text-align:center;margin-bottom:14px">'+
         '<div style="font-size:28px;margin-bottom:8px">👋</div>'+
-        '<div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:8px">Yurii Losev — practising DeFi investor</div>'+
+        '<div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px">Yurii Losev</div>'+
+        '<div style="font-size:12px;color:var(--muted2)">Practising DeFi trader, Tbilisi</div>'+
       '</div>'+
-      'I built this app for myself. I work with Aave, Uniswap, GMX and options strategies every day — not in theory, but with real positions.<br><br>'+
-      'Got tired of calculating HF in spreadsheets and manually tracking LP ranges. I wrote a tool that does it for me — now sharing it for free.<br><br>'+
+      'I work with Aave, Uniswap, GMX and options every day. Built this app for myself — used to track everything in spreadsheets, then got fed up.<br><br>'+
+      'Now I open it from my phone before bed — check HF, verify LP ranges, log what I earned. Takes thirty seconds.<br><br>'+
       '<div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin:10px 0">'+
-        '<div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:8px">If you\'re an experienced trader:</div>'+
-        '<div style="font-size:12px;color:var(--muted2);line-height:1.7">Spotted a calculation error? Formula giving wrong results? Protocol parameters outdated? <b style="color:var(--accent)">Message me</b> — I\'ll fix it as fast as I can. This matters.</div>'+
-      '</div>'+
-      '<div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin:10px 0">'+
-        '<div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:8px">If you\'re just starting out:</div>'+
-        '<div style="font-size:12px;color:var(--muted2);line-height:1.7">Something unclear in the interface? Missing explanations? A function that feels awkward? <b style="color:var(--accent)">Write to me</b> — your questions make the app better.</div>'+
+        '<div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:6px">Found a bug?</div>'+
+        '<div style="font-size:12px;color:var(--muted2);line-height:1.7">If the HF calculation doesn\'t match the protocol, parameters are outdated, or something behaves wrong — write to me. I\'ll fix it fast. This matters for everyone using the app with real positions.</div>'+
       '</div>'+
       '<div style="background:var(--surface2);border:1px solid rgba(16,185,129,0.3);border-radius:12px;padding:12px 14px;margin:10px 0">'+
-        '<div style="font-size:12px;font-weight:700;color:var(--green);margin-bottom:8px">Did it help you avoid a liquidation or save time?</div>'+
-        '<div style="font-size:12px;color:var(--muted2);line-height:1.7">The best way to support development is a donation. Any amount. It motivates adding new features and keeping data up to date.</div>'+
-      '</div>'+
-      '<div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin:10px 0">'+
-        '<div style="font-size:11px;font-family:\'Space Mono\',monospace;color:var(--muted2);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">USDC / ETH / EVM</div>'+
-        '<div style="font-size:11px;font-family:\'Space Mono\',monospace;color:var(--accent);word-break:break-all;margin-bottom:10px">0x834Be694A9c514051e6c74D46e5b5937bb1e69FA</div>'+
-        '<button onclick="navigator.clipboard.writeText(\'0x834Be694A9c514051e6c74D46e5b5937bb1e69FA\');var ok=lang===\'ru\'?\'✅ Скопировано!\':\'✅ Copied!\';this.textContent=ok;var s=this;setTimeout(function(){s.textContent=lang===\'ru\'?\'📋 Скопировать адрес\':\'📋 Copy address\';},2000)" '+
-          'style="width:100%;padding:10px;background:rgba(0,229,255,0.08);border:1px solid rgba(0,229,255,0.25);border-radius:8px;color:var(--accent);font-family:\'Syne\',sans-serif;font-size:13px;font-weight:700;cursor:pointer;touch-action:manipulation">'+
-          '"+(lang===\'ru\'?\'📋 Скопировать адрес\':\'📋 Copy address\')+"'+
-        '</button>'+
+        '<div style="font-size:12px;font-weight:700;color:var(--green);margin-bottom:6px">If it helped — send a few dollars</div>'+
+        '<div style="font-size:12px;color:var(--muted2);line-height:1.7">App is free, no ads. If it saved you time or helped avoid a liquidation — a donation keeps the development going.</div>'+
       '</div>';
-  html += s('rgba(124,58,237,0.07)','var(--border)','✉️', ru ? 'Об авторе и обратная связь' : 'About & Feedback', donateBody);
+  html += s('rgba(124,58,237,0.07)','var(--border)','✉️', ru ? 'Об авторе' : 'About', donateBody);
 
   el.innerHTML = html;
 }
@@ -6864,9 +6631,6 @@ function lpUpdateLang(){
   setEl('lp-hint-title',      ru?'💡 Как пользоваться':'💡 How to use');
   setEl('lp-hint-text',       ru?'Задай параметры → тяни жёлтую линию по графику (цена выхода) → двигай ползунок времени → смотри P&L.':'Set parameters → drag yellow line on chart (exit price) → move time slider → see P&L.');
   setEl('lp-params-title',    ru?'Параметры позиции':'Position Parameters');
-  setEl('lp-lbl-version',     ru?'ПРОТОКОЛ':'PROTOCOL');
-  // Обновляем подсказку версии по текущему значению _lpVersion
-  if(typeof _lpVersion !== 'undefined') lpSetVersion(_lpVersion);
   setEl('lp-lbl-t0',   ru?'АКТИВ':'BASE');
   setEl('lp-lbl-t1',   ru?'ПАРА':'PAIR');
   setEl('lp-lbl-fee',  ru?'КОМИССИЯ ПУЛА':'POOL FEE');
@@ -6903,210 +6667,7 @@ function lpUpdateLang(){
 // ═══════════════════════════════════════════════════════════════
 // TELEGRAM ALERTS
 // ═══════════════════════════════════════════════════════════════
-var ALERT_SERVER = 'https://defi-push-server.onrender.com';
-
-// ═══════════════════════════════════════════════════════════════
-// WEB PUSH — нативные пуш-уведомления как у биржи
-// Работает через Service Worker + VAPID + наш сервер на Render
-// ═══════════════════════════════════════════════════════════════
-var VAPID_PUBLIC_KEY = 'BKKyOJsBQgjru7Ibl_k4j5Q38KTdBCu2qBM2K82o5dGl2NZjCX2MaHgFeQAzhrIZRDEl6AMPKAzfJOsFjXenhEo';
-var _pushSubscription = null;
-var _swRegistration   = null;
-
-// Конвертируем VAPID ключ из base64 в Uint8Array
-function _urlB64ToUint8Array(base64String) {
-  var padding = '='.repeat((4 - base64String.length % 4) % 4);
-  var base64  = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/');
-  var raw     = window.atob(base64);
-  var arr     = new Uint8Array(raw.length);
-  for(var i = 0; i < raw.length; i++) arr[i] = raw.charCodeAt(i);
-  return arr;
-}
-
-// Регистрируем Service Worker и подписываемся на пуши
-async function pushInit(chatId) {
-  if(!('serviceWorker' in navigator) || !('PushManager' in window)){
-    console.log('[Push] Not supported in this browser');
-    return false;
-  }
-  try {
-    // Регистрируем sw.js
-    _swRegistration = await navigator.serviceWorker.register('/sw.js');
-    console.log('[Push] SW registered');
-
-    // Запрашиваем разрешение
-    var permission = await Notification.requestPermission();
-    if(permission !== 'granted'){
-      console.log('[Push] Permission denied');
-      pushUpdateUI('denied');
-      return false;
-    }
-
-    // Подписываемся на пуши
-    _pushSubscription = await _swRegistration.pushManager.subscribe({
-      userVisibleOnly:      true,
-      applicationServerKey: _urlB64ToUint8Array(VAPID_PUBLIC_KEY)
-    });
-    console.log('[Push] Subscribed!', _pushSubscription.endpoint.slice(0,50));
-
-    // Отправляем подписку на сервер
-    var r = await fetch(ALERT_SERVER + '/push/subscribe', {
-      method:  'POST',
-      headers: {'Content-Type': 'application/json'},
-      body:    JSON.stringify({ chatId: chatId, subscription: _pushSubscription })
-    });
-    var ok = r.ok;
-    console.log('[Push] Subscription sent to server:', ok);
-    pushUpdateUI(ok ? 'active' : 'error');
-    return ok;
-  } catch(e) {
-    console.warn('[Push] Init error:', e);
-    pushUpdateUI('error');
-    return false;
-  }
-}
-
-function pushUpdateUI(state) {
-  var btn = document.getElementById('push-enable-btn');
-  var dot = document.getElementById('push-status-dot');
-  if(!btn) return;
-  var ru = (lang === 'ru');
-  if(state === 'active') {
-    btn.textContent   = '🔔 ' + (ru ? 'Push активен' : 'Push active');
-    btn.style.background = 'rgba(16,185,129,0.15)';
-    btn.style.borderColor = 'rgba(16,185,129,0.4)';
-    btn.style.color = 'var(--green)';
-    if(dot) { dot.style.background = 'var(--green)'; dot.style.boxShadow = '0 0 6px var(--green)'; }
-  } else if(state === 'denied') {
-    btn.textContent   = '🔕 ' + (ru ? 'Пуши заблокированы' : 'Push blocked');
-    btn.style.color   = 'var(--red)';
-    if(dot) dot.style.background = 'var(--red)';
-  } else if(state === 'error') {
-    btn.textContent   = '⚠️ ' + (ru ? 'Ошибка подключения' : 'Connection error');
-    btn.style.color   = 'var(--orange)';
-    if(dot) dot.style.background = 'var(--orange)';
-  }
-}
-
-async function pushEnable() {
-  var chatId = _tgConfig.chatId;
-  if(!chatId) {
-    var ru = (lang === 'ru');
-    tgShowStatus('⚠️ ' + (ru ? 'Сначала подключи Telegram' : 'Connect Telegram first'), 'warn');
-    return;
-  }
-  var btn = document.getElementById('push-enable-btn');
-  if(btn) btn.textContent = '⏳ ' + (lang === 'ru' ? 'Подключаем...' : 'Connecting...');
-  var ok = await pushInit(chatId);
-  if(ok) {
-    var ru = (lang === 'ru');
-    tgShowStatus('✅ ' + (ru ? 'Push-уведомления активны!' : 'Push notifications active!'), 'ok');
-  }
-}
-
-
-// ═══════════════════════════════════════════════════════════════
-// NTFY.SH — мгновенные Push-уведомления без сервера
-// Бесплатный открытый сервис: https://ntfy.sh
-// Пользователь придумывает уникальный топик.
-// На телефоне устанавливает приложение ntfy и подписывается.
-// При срабатывании алерта — пуш идёт одновременно в TG и ntfy.
-// ═══════════════════════════════════════════════════════════════
-var _ntfyTopic = '';
-var _ntfyEnabled = false;
-var NTFY_SERVER = 'https://ntfy.sh';
-
-function ntfyLoadConfig(){
-  try{
-    var saved = localStorage.getItem('defi_ntfy');
-    if(saved){
-      var c = JSON.parse(saved);
-      _ntfyTopic   = c.topic   || '';
-      _ntfyEnabled = c.enabled || false;
-      var inp = document.getElementById('ntfy-topic');
-      if(inp && _ntfyTopic) inp.value = _ntfyTopic;
-      ntfyUpdateDot();
-    }
-  }catch(e){}
-}
-
-function ntfySaveConfig(){
-  _ntfyTopic = (document.getElementById('ntfy-topic')?.value||'').trim().replace(/[^a-zA-Z0-9_\-а-яА-ЯёЁ]/g,'');
-  try{ localStorage.setItem('defi_ntfy', JSON.stringify({topic:_ntfyTopic, enabled:_ntfyEnabled})); }catch(e){}
-  ntfyUpdateDot();
-}
-
-function ntfyUpdateDot(){
-  var dot = document.getElementById('ntfy-status-dot');
-  if(!dot) return;
-  dot.style.background = (_ntfyEnabled && _ntfyTopic) ? 'var(--green)' : 'var(--border2)';
-  dot.style.boxShadow  = (_ntfyEnabled && _ntfyTopic) ? '0 0 6px var(--green)' : 'none';
-}
-
-function ntfyShowStatus(msg, type){
-  var el = document.getElementById('ntfy-connect-status');
-  if(!el) return;
-  var styles = {
-    ok:   'background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);color:var(--green)',
-    err:  'background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:var(--red)',
-    info: 'background:rgba(124,58,237,0.06);border:1px solid rgba(124,58,237,0.2);color:var(--accent2)',
-  };
-  el.textContent = msg;
-  el.style.cssText = (styles[type]||styles.info)+';display:block;border-radius:10px;padding:10px 12px;font-size:12px;font-weight:700;text-align:center';
-}
-
-async function ntfyConnect(){
-  var topic = (document.getElementById('ntfy-topic')?.value||'').trim();
-  if(!topic || topic.length < 5){
-    ntfyShowStatus('⚠️ Топик слишком короткий — придумай уникальное название', 'err');
-    return;
-  }
-  _ntfyTopic   = topic;
-  _ntfyEnabled = true;
-  ntfySaveConfig();
-  // Отправляем тестовый пуш
-  var ok = await ntfySendRaw('🔗 DeFi Analytics подключён!', 'Алерты будут приходить сюда. Проверь подписку в приложении ntfy.', 3);
-  if(ok){
-    ntfyShowStatus('✅ Подключено! Проверь уведомление в ntfy', 'ok');
-  } else {
-    ntfyShowStatus('❌ Ошибка — проверь интернет и попробуй снова', 'err');
-  }
-  ntfyUpdateDot();
-}
-
-async function ntfySendTest(){
-  if(!_ntfyTopic || !_ntfyEnabled){
-    ntfyShowStatus('⚠️ Сначала подключи ntfy', 'info');
-    return;
-  }
-  var ok = await ntfySendRaw('🧪 Тестовый алерт', 'DeFi Analytics работает! Push-уведомления активны.', 3);
-  ntfyShowStatus(ok ? '✅ Тест отправлен! Проверь ntfy' : '❌ Ошибка отправки', ok ? 'ok' : 'err');
-}
-
-// Основная функция отправки Push через ntfy.sh
-async function ntfySendRaw(title, body, priority){
-  if(!_ntfyTopic || !_ntfyEnabled) return false;
-  try{
-    // HTTP заголовки должны быть ASCII — кодируем title через encodeURIComponent
-    var r = await fetch(NTFY_SERVER + '/' + encodeURIComponent(_ntfyTopic), {
-      method: 'POST',
-      headers: {
-        'X-Title':    encodeURIComponent(title),
-        'X-Priority': String(priority || 3),
-        'X-Tags':     'chart_with_upwards_trend',
-        'Content-Type': 'text/plain; charset=utf-8'
-      },
-      body: body
-    });
-    return r.ok;
-  }catch(e){ console.warn('[ntfy] send error:', e); return false; }
-}
-
-// Удобная обёртка — вызывается из tgCheckAlerts рядом с tgSend
-async function ntfySend(title, body, priority){
-  if(!_ntfyTopic || !_ntfyEnabled) return;
-  await ntfySendRaw(title, body, priority || 3);
-}
+var ALERT_SERVER = 'https://defi-alerts-server.onrender.com'; // ← заменить после деплоя
 
 var _tgConfig = {
   username: '', chatId: '', connected: false,
@@ -7139,8 +6700,8 @@ function pfRecordPrices(){
     var last = buf[buf.length-1];
     if(last && now - last.ts < 10*60*1000) return;
     buf.push({ ts: now, price: price });
-    // Храним максимум 72 точки (12ч при интервале 10мин)
-    if(buf.length > 72) buf.splice(0, buf.length - 72);
+    // Храним максимум 144 точки (24ч при интервале 10мин)
+    if(buf.length > 144) buf.splice(0, buf.length - 144);
     // Персистентность — только основные активы чтобы не раздуть LS
     var mainAssets = ['bitcoin','ethereum','solana','avalanche-2','binancecoin'];
     if(mainAssets.indexOf(cgId) !== -1){
@@ -7150,7 +6711,7 @@ function pfRecordPrices(){
         try{ stored = JSON.parse(localStorage.getItem(key)||'[]'); }catch(e){ stored=[]; }
         if(!Array.isArray(stored)) stored=[];
         stored.push({ts:now, price:price});
-        if(stored.length>72) stored=stored.slice(-72);
+        if(stored.length>144) stored=stored.slice(-144);
         localStorage.setItem(key, JSON.stringify(stored));
       }catch(e){}
     }
@@ -7170,7 +6731,7 @@ function pfLoadPriceHistory(){
         _priceHistBuffer[cgId].forEach(function(p){ existTs[p.ts]=1; });
         arr.forEach(function(p){ if(!existTs[p.ts]) _priceHistBuffer[cgId].push(p); });
         _priceHistBuffer[cgId].sort(function(a,b){return a.ts-b.ts;});
-        if(_priceHistBuffer[cgId].length>72) _priceHistBuffer[cgId]=_priceHistBuffer[cgId].slice(-72);
+        if(_priceHistBuffer[cgId].length>144) _priceHistBuffer[cgId]=_priceHistBuffer[cgId].slice(-144);
       }
     }catch(e){}
   });
@@ -7183,7 +6744,8 @@ function pfPriceSlope(cgId, windowMs){
   if(!buf || buf.length < 2) return null;
   var cutoff = Date.now() - windowMs;
   var pts = buf.filter(function(p){ return p.ts >= cutoff; });
-  if(pts.length < 2) return null;
+  // Нужна история хотя бы на час и 6 точек — иначе наклон это шум
+  if(pts.length < 6 || pts[pts.length-1].ts - pts[0].ts < 3600*1000) return null;
   var n = pts.length;
   var t0 = pts[0].ts;
   var sx=0, sy=0, sxy=0, sxx=0;
@@ -7197,40 +6759,40 @@ function pfPriceSlope(cgId, windowMs){
   return (n*sxy - sx*sy) / denom; // $/сек
 }
 
-// Считает через сколько ЧАСОВ HF достигнет targetHF при текущей скорости падения
+// Считает через сколько ЧАСОВ HF достигнет targetHF при текущей скорости падения цен.
+// Каждый залоговый актив движется со своим наклоном (за 24ч), долг считается неизменным.
+// Если контракт отдал точный HF — масштабируем оценку по нему (поправка на активы без цены).
 function pfHFforecastHours(targetHF){
   if(!_aaveContractAcct) return null;
-  var hf    = _aaveContractAcct.hf;
-  var wColl = _aaveContractAcct.weightedCollateral || 0;
-  var debt  = _aaveContractAcct.totalDebtUSD || 0;
-  if(!hf || hf <= targetHF || hf > 900 || debt <= 0 || wColl <= 0) return null;
+  var debt = _aaveContractAcct.totalDebtUSD || 0;
+  if(debt <= 0) return null;
 
-  // Ищем основной залоговый актив по $ стоимости
-  var bestAsset=null, bestVal=0;
+  var wColl = 0;   // взвешенный залог, $
+  var dW    = 0;   // изменение взвешенного залога, $/сек
+  var haveSlope = false;
   S.assets.forEach(function(a){
-    var cgId = ASSET_MAP[a.name.toLowerCase()];
-    if(!cgId) return;
-    var price = livePrices[cgId];
-    var qty   = parseFloat(a.aaveQty||a.qty||0);
-    var val   = (price||0) * qty;
-    if(val > bestVal){ bestVal=val; bestAsset=cgId; }
+    var cgId  = ASSET_MAP[(a.name||'').toLowerCase()];
+    var qty   = parseFloat(a.aaveQty) || 0;
+    var thr   = (parseFloat(a.thresh) || 0) / 100;
+    var price = cgId ? livePrices[cgId] : 0;
+    if(!qty || !thr || !price) return;
+    wColl += qty * price * thr;
+    var sl = pfPriceSlope(cgId, 24*3600*1000);
+    if(sl !== null){ dW += qty * thr * sl; haveSlope = true; }
   });
-  if(!bestAsset || bestVal <= 0) return null;
+  if(wColl <= 0 || !haveSlope) return null;
 
-  var slope = pfPriceSlope(bestAsset, 24*3600*1000);
-  if(slope === null) slope = pfPriceSlope(bestAsset, 6*3600*1000);
-  if(slope === null || slope >= 0) return null; // не падает
+  // Калибровка по HF из контракта (он есть только для одной сети)
+  var cHF = _aaveContractAcct.hf;
+  if(cHF && isFinite(cHF) && cHF > 0 && cHF < 900){
+    var k = (cHF * debt) / wColl;
+    if(k > 0.5 && k < 2){ wColl *= k; dW *= k; }
+  }
 
-  var curPrice = livePrices[bestAsset];
-  if(!curPrice || curPrice <= 0) return null;
-
-  // HF(t) = wColl(t)/debt = targetHF
-  // wColl(t) = wColl + (bestVal/curPrice)*slope*t * threshRatio
-  var threshRatio = wColl / bestVal;
-  var A = (bestVal / curPrice) * slope * threshRatio;
-  if(A >= 0) return null;
-  var tSec = (targetHF * debt - wColl) / A;
-  if(tSec <= 0 || !isFinite(tSec)) return null;
+  if(dW >= 0) return null;                       // залог не падает
+  if(wColl <= targetHF * debt) return null;      // уже ниже цели — это работа обычного алерта
+  var tSec = (wColl - targetHF * debt) / (-dW);
+  if(!isFinite(tSec) || tSec <= 0) return null;
   return tSec / 3600;
 }
 
@@ -7278,8 +6840,6 @@ async function tgConnect(){
       tgShowStatus('✅ '+(lang==='ru'?'Подключено! Проверь Telegram':'Connected! Check Telegram'), 'ok');
       // Отправляем тест
       await tgApiSend(d.chat_id, 'test', {});
-      // Автоматически инициализируем Push после подключения TG
-      setTimeout(function(){ pushInit(d.chat_id); }, 1000);
     } else {
       tgShowStatus('❌ '+(lang==='ru'?'Сначала напиши /start боту @':'First send /start to @')+getBotName(), 'err');
     }
@@ -7518,7 +7078,6 @@ async function tgCheckAlerts(hf){
       if(shouldFire){
         _tgFired[hfKey] = true;
         await tgApiSend(_tgConfig.chatId, 'hf_danger', {hf:hf.toFixed(2), threshold:_tgConfig.hfThreshold});
-        await ntfySend('🚨 Health Factor ' + hf.toFixed(2), 'HF упал ниже ' + _tgConfig.hfThreshold + '! Риск ликвидации. Пополни залог или погаси долг.', 5);
       }
     } else {
       // Сброс: если HF восстановился
@@ -7565,29 +7124,26 @@ async function tgCheckAlerts(hf){
         if(shouldFire){
           _tgFired[outKey] = true;
           delete _tgFired[inKey];
-          var ru_rng = (lang==='ru');
-          var dir = cur < lo ? (ru_rng?'📉 ниже нижней границы':'📉 below lower bound') : (ru_rng?'📈 выше верхней границы':'📈 above upper bound');
+          var dir = cur < lo ? (lang==='ru'?'📉 ниже нижней границы':'📉 below lower bound') : (lang==='ru'?'📈 выше верхней границы':'📈 above upper bound');
           await tgSend(
             '📍 <b>Out of Range!</b>\n\n'+
-            (ru_rng?'Пул: ':'Pool: ')+'<b>'+p.name+'</b>\n'+
-            (ru_rng?'Цена: ':'Price: ')+'<b>$'+Math.round(cur).toLocaleString()+'</b> '+dir+'\n'+
-            (ru_rng?'Диапазон: ':'Range: ')+'$'+Math.round(lo)+' – $'+Math.round(hi)+'\n'+
-            (ru_rng?'⚠️ Комиссии не начисляются!':'⚠️ Fees not accruing!')+'\n\n'+
+            'Пул: <b>'+p.name+'</b>\n'+
+            'Цена: <b>$'+Math.round(cur).toLocaleString()+'</b> '+dir+'\n'+
+            'Диапазон: $'+Math.round(lo)+' – $'+Math.round(hi)+'\n'+
+            '⚠️ Комиссии не начисляются!\n\n'+
             '<i>DeFi Analytics</i>'
           );
-          await ntfySend('📍 Вне диапазона: ' + p.name, 'Цена $'+Math.round(cur)+' '+dir+'. Диапазон: $'+Math.round(lo)+'–$'+Math.round(hi)+'. Комиссии не начисляются!', 4);
         }
       } else {
-        // Back in range
+        // Вернулся в диапазон
         if(_tgFired[outKey] && !_tgFired[inKey]){
-          var ru_rng2 = (lang==='ru');
           _tgFired[inKey] = true;
           delete _tgFired[outKey];
           await tgSend(
             '✅ <b>Back in Range!</b>\n\n'+
-            (ru_rng2?'Пул: ':'Pool: ')+'<b>'+p.name+'</b>\n'+
-            (ru_rng2?'Цена: ':'Price: ')+'<b>$'+Math.round(cur).toLocaleString()+'</b> '+(ru_rng2?'— в диапазоне':'— in range')+'\n'+
-            (ru_rng2?'✅ Комиссии снова начисляются!':'✅ Fees are accruing again!')+'\n\n'+
+            'Пул: <b>'+p.name+'</b>\n'+
+            'Цена: <b>$'+Math.round(cur).toLocaleString()+'</b> — в диапазоне\n'+
+            '✅ Комиссии снова начисляются!\n\n'+
             '<i>DeFi Analytics</i>'
           );
         }
@@ -7655,7 +7211,6 @@ async function tgCheckAlerts(hf){
           (lvCur <= lv.level ? (lang==='ru'?'📉 Цена ниже уровня':'📉 Price below level') : (lang==='ru'?'📈 Цена выше уровня':'📈 Price above level'))+'\n\n'+
           '<i>DeFi Analytics</i>'
         );
-        await ntfySend(lvArrow+' '+lvAsset+(lv.label?' — '+lv.label:''), 'Цена $'+Math.round(lvCur)+'. Уровень $'+Math.round(lv.level)+' пробит!', 4);
       }
     } else {
       if(lv.repeat === 'once') delete _tgFired[lvKey];
@@ -8223,8 +7778,6 @@ function walletUpdateLang(){
   setEl('lbl-wallet-load-btn', wt('load_btn'));
   var inp = document.getElementById('wallet-address-input');
   if(inp) inp.placeholder = wt('placeholder');
-  var addBtn = document.getElementById('btn-add-asset');
-  if(addBtn) addBtn.textContent = t('add_asset_btn');
 }
 
 function walletOnInput(){
@@ -8313,28 +7866,24 @@ async function walletLoad(){
     // EVM — скрываем чип Solana
     walletSetChip('solana', 'skip');
 
-    // ── Фаза 1: Aave v3 Ethereum ─────────────────────────────
-    var aaveOk = await walletLoadAave(addr);
-    walletSetChip('aave', aaveOk ? 'active' : 'error');
-
-    // ── Фаза 2: Merkl rewards (multi-chain EVM) ───────────────
-    var merklOk = await walletLoadMerkl(addr);
-    walletSetChip('merkl', merklOk ? 'active' : 'error');
-
-    // ── Фаза 3: Uniswap v3/v4 позиции ────────────────────────
+    // Протоколы независимы друг от друга (S.assets и займ пишет только Aave, остальные —
+    // в свои переменные и чипы), поэтому грузим параллельно: время = самый медленный запрос,
+    // а не сумма всех. Сбой одного протокола даёт красный чип, а не обрыв всей загрузки.
+    function _wl(chipId, loader){
+      return loader(addr).catch(function(e){ console.warn('[wallet]', chipId, e); return false; })
+        .then(function(ok){ walletSetChip(chipId, ok ? 'active' : 'error'); return ok; });
+    }
     walletSetChip('uniswap', 'loading');
-    var uniOk = await walletLoadUniswap(addr);
-    walletSetChip('uniswap', uniOk ? 'active' : 'error');
-
-    // ── Фаза 4: GMX позиции (Arbitrum + Avalanche) ───────────
     walletSetChip('gmx', 'loading');
-    var gmxOk = await walletLoadGMX(addr);
-    walletSetChip('gmx', gmxOk ? 'active' : 'error');
-
-    // ── Фаза 5: Morpho Blue позиции ───────────────────────────
     walletSetChip('morpho', 'loading');
-    var morphoOk = await walletLoadMorpho(addr);
-    walletSetChip('morpho', morphoOk ? 'active' : 'error');
+    var _res = await Promise.all([
+      _wl('aave',    walletLoadAave),
+      _wl('merkl',   walletLoadMerkl),
+      _wl('uniswap', walletLoadUniswap),
+      _wl('gmx',     walletLoadGMX),
+      _wl('morpho',  walletLoadMorpho)
+    ]);
+    var aaveOk = _res[0], merklOk = _res[1], uniOk = _res[2], gmxOk = _res[3], morphoOk = _res[4];
 
     // Compound — позже
     walletSetChip('compound','skip');
@@ -9133,7 +8682,7 @@ async function walletLoadAave(addr){
   });
 
   if(!chains2.length){
-    if(chip) chip.innerHTML='🏦 Aave <span style="font-size:9px;color:var(--muted2)">'+(lang==='ru'?'нет позиций':'no positions')+'</span>';
+    if(chip) chip.innerHTML='🏦 Aave <span style="font-size:9px;color:var(--muted2)">нет позиций</span>';
     return false;
   }
   return _applyAave(allSup2, allDeb2, chains2, chainAccts2, 'rpc');
@@ -9494,7 +9043,7 @@ async function walletLoadUniswap(addr){
         totalFound+' поз'+(totalUSD>0.01?' · $'+totalUSD.toFixed(0):'')+
         '</span>';
     } else {
-      chip.innerHTML = '🦄 Uniswap <span style="color:var(--muted2)">'+(lang==='ru'?'нет позиций':'no positions')+'</span>';
+      chip.innerHTML = '🦄 Uniswap <span style="color:var(--muted2)">нет позиций</span>';
     }
   }
   return totalFound > 0;
@@ -9549,7 +9098,7 @@ async function walletLoadGMX(addr){
         totalFound+' поз'+(tot>0.01?' · $'+tot.toFixed(0):'')+
         '</span>';
     } else {
-      chip.innerHTML = '🟢 GMX <span style="color:var(--muted2)">'+(lang==='ru'?'нет позиций':'no positions')+'</span>';
+      chip.innerHTML = '🟢 GMX <span style="color:var(--muted2)">нет позиций</span>';
     }
   }
   return totalFound > 0;
@@ -9794,14 +9343,13 @@ async function walletLoadMorpho(addr){
     return s + (p.colUSD||0) + (p.supplyUSD||0);
   }, 0);
 
-  var ru_mchip = (lang==='ru');
   if(chip){
     if(totalFound > 0){
       chip.innerHTML = '🦋 Morpho <span style="color:var(--green);font-weight:700">'+
-        totalFound+(ru_mchip?' поз':' pos')+(totalUSD>0.01?' · $'+totalUSD.toFixed(0):'')+
+        totalFound+' поз'+(totalUSD>0.01?' · $'+totalUSD.toFixed(0):'')+
         '</span>';
     } else {
-      chip.innerHTML = '🦋 Morpho <span style="color:var(--muted2)">'+(ru_mchip?'нет позиций':'no positions')+'</span>';
+      chip.innerHTML = '🦋 Morpho <span style="color:var(--muted2)">нет позиций</span>';
     }
   }
   return totalFound > 0;
@@ -9825,7 +9373,6 @@ function _renderWalletMorphoPositions(poolsEl, poolsTotEl){
   poses.forEach(function(p){
     totalMorpho += (p.colUSD||0) + (p.supplyUSD||0);
 
-    var ru_morpho = (lang==='ru');
     var hfColor = p.hf <= 0 ? 'var(--muted2)' : p.hf < 1.2 ? 'var(--red)' : p.hf < 1.5 ? '#f59e0b' : 'var(--green)';
     var hfStr   = p.hf > 0 ? p.hf.toFixed(2) : '—';
 
@@ -9847,14 +9394,14 @@ function _renderWalletMorphoPositions(poolsEl, poolsTotEl){
       '</div>'+
       '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px">'+
         '<div style="background:rgba(0,0,0,0.2);border-radius:8px;padding:7px 10px">'+
-          '<div style="font-size:9px;color:var(--muted2);margin-bottom:2px">'+(ru_morpho?'ЗАЛОГ':'COLLATERAL')+'</div>'+
+          '<div style="font-size:9px;color:var(--muted2);margin-bottom:2px">ЗАЛОГ</div>'+
           '<div style="font-family:\'Space Mono\',monospace;font-size:11px;font-weight:700;color:var(--orange)">'+
             (p.colUSD>0.01?'$'+p.colUSD.toFixed(2):'—')+
           '</div>'+
           '<div style="font-size:9px;color:var(--muted2)">'+p.colSym+'</div>'+
         '</div>'+
         '<div style="background:rgba(0,0,0,0.2);border-radius:8px;padding:7px 10px">'+
-          '<div style="font-size:9px;color:var(--muted2);margin-bottom:2px">'+(ru_morpho?'ЗАЙМ':'DEBT')+'</div>'+
+          '<div style="font-size:9px;color:var(--muted2);margin-bottom:2px">ЗАЙМ</div>'+
           '<div style="font-family:\'Space Mono\',monospace;font-size:11px;font-weight:700;color:'+(p.borrowUSD>0.01?'var(--red)':'var(--muted2)')+'">'+
             (p.borrowUSD>0.01?'$'+p.borrowUSD.toFixed(2):'—')+
           '</div>'+
@@ -9922,25 +9469,24 @@ async function walletLoadMerkl(addr){
 // СБРОС ВСЕХ ДАННЫХ И НАСТРОЕК
 // ══════════════════════════════════════════════════════════════
 function walletResetAll(){
-  var ru_reset = (lang==='ru');
   var overlay = document.createElement('div');
   overlay.id = 'reset-confirm-overlay';
   overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px';
   overlay.innerHTML =
     '<div style="background:var(--surface2);border:1px solid rgba(220,38,38,0.4);border-radius:16px;padding:24px;max-width:320px;width:100%;text-align:center">'+
       '<div style="font-size:32px;margin-bottom:12px">⚠️</div>'+
-      '<div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:8px">'+(ru_reset?'Сбросить всё?':'Reset everything?')+'</div>'+
+      '<div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:8px">Сбросить всё?</div>'+
       '<div style="font-size:13px;color:var(--muted2);margin-bottom:20px;line-height:1.5">'+
-        (ru_reset?'Будут удалены все настройки, пулы, активы, кошельки и сохранённые данные. Приложение вернётся к начальному виду.':'All settings, pools, assets, wallets and saved data will be deleted. The app will return to its initial state.')+
+        'Будут удалены все настройки, пулы, активы, кошельки и сохранённые данные. Приложение вернётся к начальному виду.'+
       '</div>'+
       '<div style="display:flex;gap:10px">'+
         '<button onclick="document.getElementById(\x27reset-confirm-overlay\x27).remove()" '+
           'style="flex:1;padding:12px;background:var(--surface);border:1px solid var(--border2);border-radius:10px;color:var(--text);font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">'+
-          (ru_reset?'Отмена':'Cancel')+
+          'Отмена'+
         '</button>'+
         '<button onclick="_doResetAll()" '+
           'style="flex:1;padding:12px;background:rgba(220,38,38,0.8);border:none;border-radius:10px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">'+
-          (ru_reset?'Сбросить':'Reset')+
+          'Сбросить'+
         '</button>'+
       '</div>'+
     '</div>';
@@ -9968,10 +9514,92 @@ function walletRestoreAddress(){
   }catch(e){}
 }
 
+// ═══════════════════════════════════════════════════════════════
+// ОБНОВЛЕНИЕ ПРИЛОЖЕНИЯ — баннер «Доступна новая версия»
+// Работает только внутри Android-приложения (есть AndroidBridge).
+// Установленная версия — из APK, последняя — из version.json на GitHub Pages.
+// Содержимое version.json показывается как ТЕКСТ (textContent), разметка в нём не выполняется.
+// ═══════════════════════════════════════════════════════════════
+var UPD_URL = 'https://yuriilosiev-png.github.io/defi-app/version.json';
+var UPD_LATER_MS = 24*3600*1000;   // «Позже» — не напоминать об этом релизе сутки
+var UPD_EVERY_MS = 3600*1000;      // проверять не чаще раза в час
+var _updInfo = null, _updLastCheck = 0;
+
+function updInApp(){
+  return !!(window.AndroidBridge && typeof AndroidBridge.getVersionCode === 'function');
+}
+
+function updSanitize(v){
+  if(!v || typeof v !== 'object') return null;
+  var code = parseInt(v.versionCode, 10);
+  if(!(code > 0) || code > 1e9) return null;
+  var notes = {ru:[], en:[]};
+  ['ru','en'].forEach(function(l){
+    var a = v.notes && v.notes[l];
+    if(Array.isArray(a)) notes[l] = a.slice(0, 8).map(function(s){ return String(s).slice(0, 160); });
+  });
+  return { versionCode: code, versionName: String(v.versionName || '').slice(0, 20), notes: notes };
+}
+
+function updCheck(){
+  if(!updInApp()) return;
+  if(Date.now() - _updLastCheck < UPD_EVERY_MS) return;
+  _updLastCheck = Date.now();
+  var cur = parseInt(AndroidBridge.getVersionCode(), 10) || 0;
+  fetchT(UPD_URL + '?t=' + Date.now(), 8000, {cache:'no-store'})
+    .then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
+    .then(function(v){
+      var info = updSanitize(v);
+      if(!info || info.versionCode <= cur){ updHide(); return; }
+      var later = null;
+      try{ later = JSON.parse(localStorage.getItem('defi_upd_later') || 'null'); }catch(e){}
+      if(later && later.c === info.versionCode && Date.now() - later.t < UPD_LATER_MS) return;
+      _updInfo = info;
+      updShow(info);
+    })
+    .catch(function(){ /* нет сети — баннер просто не показываем */ });
+}
+
+function updShow(info){
+  var b = document.getElementById('upd-banner'); if(!b) return;
+  document.getElementById('upd-title').textContent = t('upd_title');
+  document.getElementById('upd-ver').textContent = t('upd_ver') + ' ' + (info.versionName || info.versionCode);
+  document.getElementById('upd-notes-title').textContent = t('upd_notes');
+  document.getElementById('upd-install').textContent = t('upd_install');
+  document.getElementById('upd-later').textContent = t('upd_later');
+  var list = (info.notes[lang] && info.notes[lang].length) ? info.notes[lang] : info.notes.ru;
+  var ul = document.getElementById('upd-notes');
+  ul.textContent = '';
+  list.forEach(function(s){ var li = document.createElement('li'); li.textContent = s; ul.appendChild(li); });
+  var nt = document.getElementById('upd-notes-title');
+  nt.style.display = ul.style.display = list.length ? '' : 'none';
+  b.classList.add('visible');
+}
+
+function updHide(){
+  var b = document.getElementById('upd-banner'); if(b) b.classList.remove('visible');
+}
+
+function updInstall(){
+  updHide();
+  try{ AndroidBridge.startUpdate(); }catch(e){}
+}
+
+function updLater(){
+  if(_updInfo){
+    try{ localStorage.setItem('defi_upd_later', JSON.stringify({c:_updInfo.versionCode, t:Date.now()})); }catch(e){}
+  }
+  updHide();
+}
+
 // ─── INIT ───
 window.onload = function(){
   // Не посылаем алерты пока страница скрыта — сбрасываем при возврате
   document.addEventListener('visibilitychange', function(){
+    if(!document.hidden && Date.now() - _lastPriceFetch > 55000){
+      try{ fetchPrices(); }catch(e){}
+    }
+    if(!document.hidden){ try{ updCheck(); }catch(e){} }
     if(document.hidden){
       // Страница скрыта — сбрасываем HF fired флаги чтобы не было ложных алертов
       // при возврате когда calc пересчитается с нуля
@@ -10013,65 +9641,10 @@ window.onload = function(){
   setTimeout(lpInitCanvas, 200);
   // Load Telegram config
   setTimeout(tgLoadConfig, 100);
-  // Load ntfy Push config
-  setTimeout(ntfyLoadConfig, 150);
+  // Проверка обновления приложения (только в APK)
+  setTimeout(updCheck, 4000);
   // Загружаем историю цен для HF-прогноза
   try{ pfLoadPriceHistory(); }catch(e){}
-
-  // ── АВТО-ЗАГРУЗКА КОШЕЛЬКА ──────────────────────────────
-  // Если есть сохранённый кошелёк — грузим автоматически при старте.
-  // Задержка 4 сек: цены успевают загрузиться, calc() уже отработал.
-  try{
-    var _autoAddr = localStorage.getItem('defi_wallet_addr');
-    if(_autoAddr && _autoAddr.length > 10){
-      // Оранжевый индикатор пока идёт авто-загрузка
-      setTimeout(function(){
-        var _dot = document.getElementById('wallet-status-dot');
-        if(_dot){ _dot.style.background='var(--orange)'; }
-      }, 200);
-      // Загружаем кошелёк через 4 секунды (цены уже загружены)
-      setTimeout(function(){
-        console.log('[AutoLoad] Loading saved wallet:', _autoAddr.slice(0,10)+'...');
-        walletLoad();
-      }, 4000);
-      // Обновляем данные каждые 5 минут
-      setInterval(function(){
-        var _refAddr = localStorage.getItem('defi_wallet_addr');
-        if(_refAddr && _refAddr.length > 10 && !_walletLoading){
-          console.log('[AutoRefresh] Refreshing wallet...');
-          var _refInp = document.getElementById('wallet-address-input');
-          if(_refInp && _refInp.value.trim().length < 10) _refInp.value = _refAddr;
-          walletLoad();
-        }
-      }, 5 * 60 * 1000);
-    }
-  }catch(e){ console.warn('[AutoLoad] error:', e); }
-
-  // ── АВТО-ВОССТАНОВЛЕНИЕ PUSH ПОДПИСКИ ────────────────────
-  // Если TG уже подключён — восстанавливаем Push подписку тихо
-  setTimeout(async function(){
-    try{
-      var cfg = localStorage.getItem('defi_tg_alerts');
-      if(cfg){
-        var c = JSON.parse(cfg);
-        if(c.connected && c.chatId && 'serviceWorker' in navigator){
-          var reg = await navigator.serviceWorker.register('/sw.js');
-          var existing = await reg.pushManager.getSubscription();
-          if(existing){
-            _pushSubscription = existing;
-            _swRegistration   = reg;
-            await fetch(ALERT_SERVER + '/push/subscribe', {
-              method:  'POST',
-              headers: {'Content-Type':'application/json'},
-              body:    JSON.stringify({chatId: c.chatId, subscription: existing})
-            });
-            pushUpdateUI('active');
-            console.log('[Push] Restored existing subscription');
-          }
-        }
-      }
-    }catch(e){ console.log('[Push] Auto-restore error:', e); }
-  }, 3000);
 };
 
 // ══════════════════════════════════════════════════════════════
@@ -10475,7 +10048,7 @@ function _renderWalletEVM(ankrResult, hasProtocols){
     sep.innerHTML =
       '<div style="flex:1;height:1px;background:rgba(0,229,255,0.25)"></div>'+
       '<span style="font-size:10px;color:rgba(0,229,255,0.85);font-family:\'Space Mono\',monospace;font-weight:700;text-transform:uppercase;letter-spacing:1px">'+
-        meta.icon+' '+meta.label+(hasProtocols?(lang==='ru'?' · баланс кошелька':' · wallet balance'):(lang==='ru'?' · кошелёк':' · wallet'))+
+        meta.icon+' '+meta.label+(hasProtocols?' · баланс кошелька':' · кошелёк')+
       '</span>'+
       '<div style="flex:1;height:1px;background:rgba(0,229,255,0.25)"></div>';
     poolsEl.appendChild(sep);
@@ -10503,7 +10076,7 @@ function _renderWalletEVM(ankrResult, hasProtocols){
           '<span style="font-size:14px">'+icon+'</span>'+
           '<div>'+
             '<div style="font-size:13px;font-weight:700">'+sym+'</div>'+
-            '<div style="font-size:10px;color:var(--muted2)">'+meta.label+(isNative?(lang==='ru'?' · нативный':' · native'):'')+'</div>'+
+            '<div style="font-size:10px;color:var(--muted2)">'+meta.label+(isNative?' · нативный':'')+'</div>'+
           '</div>'+
         '</div>'+
         '<div style="text-align:right">'+
@@ -10552,7 +10125,7 @@ function _renderWalletSolana(){
           '<span style="font-size:18px">◎</span>'+
           '<div>'+
             '<div style="font-size:14px;font-weight:700">SOL</div>'+
-            '<div style="font-size:10px;color:var(--muted2);font-family:\'Space Mono\',monospace">'+(lang==='ru'?'Нативный баланс':'Native balance')+' · '+d.source+'</div>'+
+            '<div style="font-size:10px;color:var(--muted2);font-family:\'Space Mono\',monospace">Нативный баланс · '+d.source+'</div>'+
           '</div>'+
         '</div>'+
         '<div style="text-align:right">'+
