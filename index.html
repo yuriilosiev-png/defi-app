@@ -8849,7 +8849,7 @@ function _aaveBanner(sups,debUSD,colUSD,chains,chainAccts){
       '<div style="background:rgba(0,0,0,0.2);border-radius:8px;padding:8px 10px">'+
         '<div style="font-size:9px;color:var(--muted2);margin-bottom:3px">'+(ru?'ЗАЛОГ':'COLLATERAL')+'</div>'+
         '<div style="font-family:\'Space Mono\',monospace;font-size:13px;font-weight:700;color:var(--orange)">$'+colUSD.toFixed(2)+'</div>'+
-        '<div style="font-size:9px;color:var(--muted2);margin-top:2px">'+(ru?'+ доход':'+ yield')+'</div>'+
+        '<div style="font-size:9px;color:var(--muted2);margin-top:2px">'+(sups.length?_pfAssetsWord(sups.length,ru):(ru?'+ доход':'+ yield'))+'</div>'+
       '</div>'+
       '<div style="background:rgba(0,0,0,0.2);border-radius:8px;padding:8px 10px">'+
         '<div style="font-size:9px;color:var(--muted2);margin-bottom:3px">'+(ru?'ЗАЙМ':'BORROW')+'</div>'+
@@ -8857,7 +8857,7 @@ function _aaveBanner(sups,debUSD,colUSD,chains,chainAccts){
         '<div style="font-size:9px;color:var(--muted2);margin-top:2px">'+(ru?'+ долг %':'+ accrued')+'</div>'+
       '</div>'+
       '<div style="background:rgba(0,0,0,0.2);border-radius:8px;padding:8px 10px">'+
-        '<div style="font-size:9px;color:var(--muted2);margin-bottom:3px">'+(ru?'EQUITY':'EQUITY')+'</div>'+
+        '<div style="font-size:9px;color:var(--muted2);margin-bottom:3px">'+(ru?'P&L (ОБЩИЙ)':'TOTAL P&L')+'</div>'+
         '<div style="font-family:\'Space Mono\',monospace;font-size:13px;font-weight:700;color:'+netEquityColor+'">'+(netEquity>=0?'+':'')+'$'+netEquity.toFixed(2)+'</div>'+
         '<div style="font-size:9px;color:var(--muted2);margin-top:2px">'+(ru?'залог − займ':'col − debt')+'</div>'+
       '</div>'+
@@ -9355,11 +9355,63 @@ async function walletLoadMorpho(addr){
   return totalFound > 0;
 }
 
+// ── Баннер протокола: залог (кол-во активов) · займ · общий P&L = залог − займ · HF ──
+function _pfAssetsWord(n, ru){
+  if(!ru) return n + (n===1?' asset':' assets');
+  var m10 = n % 10, m100 = n % 100, w = 'активов';
+  if(m10===1 && m100!==11) w = 'актив';
+  else if(m10>=2 && m10<=4 && (m100<10 || m100>=20)) w = 'актива';
+  return n + ' ' + w;
+}
+
+function _morphoBanner(poses){
+  var ru = (lang==='ru');
+  var colUSD=0, debUSD=0, syms={}, minHF=null;
+  poses.forEach(function(p){
+    colUSD += p.colUSD||0;
+    debUSD += p.borrowUSD||0;
+    if((p.colUSD||0) > 0.01 && p.colSym) syms[p.colSym]=1;
+    if((p.borrowUSD||0) > 0.01 && p.hf > 0 && (minHF===null || p.hf < minHF)) minHF = p.hf;
+  });
+  if(colUSD < 0.01 && debUSD < 0.01) return null;   // только supply — баннер не нужен
+  var nAssets = Object.keys(syms).length;
+  var hfTxt='∞', hfCol='#10b981';
+  if(minHF !== null){
+    hfTxt = minHF.toFixed(2);
+    hfCol = minHF>=2?'#10b981':minHF>=1.6?'#00e5ff':minHF>=1.4?'#f59e0b':'#ef4444';
+  }
+  var net = colUSD - debUSD;
+  var netCol = net >= 0 ? 'var(--green)' : 'var(--red)';
+  var tile = function(label, val, valCol, sub){
+    return '<div style="background:rgba(0,0,0,0.2);border-radius:8px;padding:8px 10px">'+
+      '<div style="font-size:9px;color:var(--muted2);margin-bottom:3px">'+label+'</div>'+
+      '<div style="font-family:\'Space Mono\',monospace;font-size:13px;font-weight:700;color:'+valCol+'">'+val+'</div>'+
+      '<div style="font-size:9px;color:var(--muted2);margin-top:2px">'+sub+'</div></div>';
+  };
+  var d = document.createElement('div');
+  d.style.cssText = 'margin-bottom:10px;background:rgba(100,100,255,0.06);border:1px solid rgba(100,100,255,0.25);border-radius:14px;padding:14px 16px';
+  d.innerHTML =
+    '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">'+
+      '<div style="font-size:13px;font-weight:800;color:var(--text)">🦋 Morpho</div>'+
+      '<div style="display:flex;align-items:center;gap:5px"><span style="font-size:10px;color:var(--muted2)">HF</span>'+
+      '<span style="font-family:\'Space Mono\',monospace;font-size:16px;font-weight:800;color:'+hfCol+'">'+hfTxt+'</span></div>'+
+    '</div>'+
+    '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px">'+
+      tile(ru?'ЗАЛОГ':'COLLATERAL','$'+colUSD.toFixed(2),'var(--orange)', nAssets?_pfAssetsWord(nAssets,ru):'—')+
+      tile(ru?'ЗАЙМ':'BORROW','$'+debUSD.toFixed(2),debUSD>0.01?'var(--red)':'var(--muted2)', ru?'долг':'debt')+
+      tile(ru?'P&L (ОБЩИЙ)':'TOTAL P&L',(net>=0?'+':'−')+'$'+Math.abs(net).toFixed(2),netCol, ru?'залог − займ':'col − debt')+
+    '</div>';
+  return d;
+}
+
 // Рендер Morpho в блок пулов (залог + займ)
 function _renderWalletMorphoPositions(poolsEl, poolsTotEl){
   var poses = (typeof _walletMorphoPositions !== 'undefined') ? _walletMorphoPositions : [];
   if(!poses.length) return;
   if(!poolsEl) return;
+
+  var _mb = _morphoBanner(poses);
+  if(_mb) poolsEl.appendChild(_mb);
 
   var sep = document.createElement('div');
   sep.style.cssText = 'margin:12px 0 8px;display:flex;align-items:center;gap:8px';
