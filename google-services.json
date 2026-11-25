@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "807542014315",
+    "project_id": "defi-analytics-a4b1d",
+    "storage_bucket": "defi-analytics-a4b1d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:807542014315:android:04ac84ca79c02628a60c2e",
+        "android_client_info": {
+          "package_name": "com.losiev.defianalytics"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAh-tXjO9IN0btAG_z8dkN21iqpQXUkGXk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
